@@ -8,7 +8,7 @@ How to use
 
 Build the plugin and install it to your local maven repository:
 
-   $ gradle gradle clean publishToMavenLocal
+    $ gradle gradle clean publishToMavenLocal
 
 After this, add into an existing project's root a `build.gradle` file with the following contents:
 
@@ -29,6 +29,10 @@ apply plugin: 'mule'
 mule.version = '3.5.0-bighorn'
 
 ```
+
+How to build your app:
+
+    $ gradle build
 
 This plugin also adds two dependency scopes to gradle that are important for container-based type of projects:
 
