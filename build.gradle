@@ -1,0 +1,24 @@
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+repositories {
+    mavenLocal();
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+
+group = 'com.mulesoft.build'
+version = '1.0.0'
