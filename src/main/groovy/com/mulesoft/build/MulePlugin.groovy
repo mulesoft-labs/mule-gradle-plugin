@@ -21,8 +21,7 @@ class MulePlugin implements Plugin<Project> {
         //add the mule extension.
         project.extensions.create("mule", MulePluginExtension)
 
-        def mule = project.mule;
-
+        MulePluginExtension mule = project.mule
 
         //add providedCompile and providedRuntime for dependency management.
         //this is needed because we'll be generating a container - based archive.
@@ -94,9 +93,13 @@ class MulePlugin implements Plugin<Project> {
         ziptask.from {
             return "src/main/app"
         }
+
+        //add the data-mapper mappings
         ziptask.from {
             return "mappings"
         }
+
+        //add the APIKit specific files.
         ziptask.from {
             return "src/main/api"
         }
@@ -107,7 +110,7 @@ class MulePlugin implements Plugin<Project> {
 
         ziptask.classpath {
             FileCollection runtimeClasspath = project.getConvention().getPlugin(JavaPluginConvention.class)
-                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath();
+                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath()
             Configuration providedRuntime = project.getConfigurations().getByName(
                     'providedRuntime');
             runtimeClasspath.minus(providedRuntime);
@@ -115,7 +118,7 @@ class MulePlugin implements Plugin<Project> {
 
         ziptask.setDescription("Generate the MuleApp deployable zip archive")
         ziptask.setGroup(BasePlugin.BUILD_GROUP)
-        ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask);
-        project.getExtensions().getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact);
+        ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask)
+        project.getExtensions().getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact)
     }
 }
