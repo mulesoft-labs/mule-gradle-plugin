@@ -1,5 +1,6 @@
 package com.mulesoft.build.studio
 
+import groovy.xml.XmlUtil
 import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,6 +15,9 @@ class StudioDependencies {
 
     static String STUDIO_DEPS_FILE = 'studio-deps.xml';
 
+    //cache to avoid parsing the file over and over
+    List<Map> cache;
+
     /**
      * Get all the dependencies configured on the studio
      * @return
@@ -23,13 +27,19 @@ class StudioDependencies {
         //if the studio deps file exists, then read through it
         File deps = project.file(STUDIO_DEPS_FILE)
 
+        if (cache != null) {
+            return cache
+        }
+
         if (!deps.exists()) {
             logger.warn("Studio specific dependencies file ${deps.absolutePath} does not exist")
             return []
         }
 
+        //cache the compile deps.
+        cache = listCompileDeps(deps)
 
-        return listCompileDeps(deps)
+        return cache;
     }
 
     List<Map> listCompileDeps(File file) {
@@ -53,5 +63,72 @@ class StudioDependencies {
         return ret;
     }
 
+    void addDependency(Project project) {
 
+        //this requires three system properties.
+        String group = System.getProperty('group')
+        String name = System.getProperty('name')
+        String version = System.getProperty('version')
+
+        if (!group?.trim() || !name?.trim() || !version?.trim()) {
+            logger.error('Could not find one of group, name or version parameters')
+            return
+        }
+
+        logger.info("Prepared to add studio dependency: group: $group, name: $name, version: $version")
+
+        //verify if the dependency is already
+        Map dep = [group: group, name: name, version: version]
+
+        List<Map> deps = listCompileDeps(project)
+
+        Map existing = deps.find {
+            return it.equals(dep)
+        }
+
+        if (existing) {
+            logger.info('Project already contains the same studio dependency!')
+            return
+        }
+
+        //proceed to add
+        File xml = project.file(STUDIO_DEPS_FILE)
+
+        addDependencyToFile(dep, xml)
+    }
+
+    void addDependencyToFile(Map<String, String> dep, File xml) {
+
+        def dependencies = null
+
+        XmlSlurper slurper = new XmlSlurper()
+
+
+        if (xml.exists()) {
+            //parse the xml
+            dependencies = slurper.parse(xml)
+        } else {
+            dependencies = slurper.parseText('<?xml version="1.0" encoding="UTF-8" ?><dependencies></dependencies>')
+        }
+
+        //the dependency might be there in different version
+        def existing = dependencies.dependency.find {
+            it.@name == dep['name'] && it.@group == dep['group']
+        }
+
+        //if it exists, then remove it
+        if (existing) {
+            existing.replaceNode {}
+        }
+
+        dependencies.appendNode {
+            dependency(dep)
+        }
+
+        if (!xml.exists())
+            xml.createNewFile()
+
+
+        XmlUtil.serialize(dependencies, xml.newWriter())
+    }
 }
