@@ -2,6 +2,7 @@ package com.mulesoft.build
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
@@ -9,10 +10,16 @@ import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 /**
  * Created by juancavallotti on 02/01/14.
  */
 class MulePlugin implements Plugin<Project> {
+
+    Logger logger = LoggerFactory.getLogger(MulePlugin.class)
+
     void apply(Project project) {
 
         //apply the java plugin.
@@ -87,7 +94,7 @@ class MulePlugin implements Plugin<Project> {
         }
 
         //the packaging logic.
-        def ziptask = project.getTasks().create("mulezip", MuleZip.class);
+        Task ziptask = project.tasks.create("mulezip", MuleZip.class);
 
         //add the app directory yo the root of the zip file.
         ziptask.from {
@@ -105,20 +112,26 @@ class MulePlugin implements Plugin<Project> {
         }
 
         ziptask.dependsOn {
-            project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath()
+            project.convention.getPlugin(JavaPluginConvention.class).sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).runtimeClasspath
         }
 
         ziptask.classpath {
-            FileCollection runtimeClasspath = project.getConvention().getPlugin(JavaPluginConvention.class)
-                    .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath()
-            Configuration providedRuntime = project.getConfigurations().getByName(
+
+            FileCollection runtimeClasspath = project.convention.getPlugin(JavaPluginConvention.class)
+                    .sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).runtimeClasspath
+
+            Configuration providedRuntime = project.configurations.getByName(
                     'providedRuntime');
-            runtimeClasspath.minus(providedRuntime);
+
+            runtimeClasspath -= providedRuntime;
+
         }
 
-        ziptask.setDescription("Generate the MuleApp deployable zip archive")
-        ziptask.setGroup(BasePlugin.BUILD_GROUP)
+        ziptask.description = "Generate the MuleApp deployable zip archive"
+        ziptask.group = BasePlugin.BUILD_GROUP
+
         ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask)
-        project.getExtensions().getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact)
+        project.extensions.getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact)
+
     }
 }
