@@ -30,9 +30,9 @@ class StudioPlugin implements Plugin<Project> {
             compile(deps.listCompileDeps(project))
         }
 
-        project.task('addDependency', {
+        project.task('addDependency') << {
              deps.addDependency(project);
-        })
+        }
 
         //TODO - Add specific studio customizations
     }
