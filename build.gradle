@@ -22,5 +22,5 @@ publishing {
 }
 
 
-group = 'com.mulesoft.build'
-version = '1.0.0'
+group = 'org.mulesoft.build'
+version = '1.0.0-SNAPSHOT'
