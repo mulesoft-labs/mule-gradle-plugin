@@ -57,14 +57,12 @@ The package itself contains as well a plugin to update MuleStudio's build path w
 To enable this support, edit your `build.gradle` script and change the following:
 
 ```groovy
-
 apply plugin: 'mulestudio'
-
 ```
 
 For the time being this combines the Eclipse Plugin and the Mule plugin, so, in order to update the studio classpath,
 just run:
 
-    $gradle clean eclipse
+    $ gradle clean eclipse
 
 In the future extra functionality will be added to polish the studio integration.
