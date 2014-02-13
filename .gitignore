@@ -4,3 +4,6 @@
 *.iml
 /build
 /out
+target/
+/sample-project/build
+

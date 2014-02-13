@@ -1,0 +1,13 @@
+buildscript {
+	dependencies {
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0-SNAPSHOT'
+	}
+
+	repositories {
+		mavenLocal()
+	}
+}
+
+apply plugin: 'mulestudio'
+
+mule.version = '3.4.0'
