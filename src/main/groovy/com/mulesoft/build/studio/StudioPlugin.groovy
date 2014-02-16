@@ -17,6 +17,9 @@ package com.mulesoft.build.studio
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  *
@@ -26,6 +29,8 @@ import org.gradle.api.Project
  * Created by juancavallotti on 04/01/14.
  */
 class StudioPlugin implements Plugin<Project> {
+
+    private static final Logger logger = LoggerFactory.getLogger(StudioPlugin.class)
 
     @Override
     void apply(Project project) {
@@ -46,9 +51,18 @@ class StudioPlugin implements Plugin<Project> {
         }
 
         project.task('addDependency') << {
-             deps.addDependency(project);
+            deps.addDependency(project);
         }
 
-        //TODO - Add specific studio customizations
+        Task studioTask = project.task('studio') << {
+            logger.info("Updating mule studio project...")
+            //TODO - Add specific studio customizations
+        }
+
+        //this runs the eclipse task first.
+        studioTask.dependsOn 'eclipse'
+
+
+
     }
 }
