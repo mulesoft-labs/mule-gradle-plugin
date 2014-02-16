@@ -50,18 +50,21 @@ class StudioPlugin implements Plugin<Project> {
             compile(deps.listCompileDeps(project))
         }
 
-        project.task('addDependency') << {
+        Task currentTask
+
+        currentTask = project.task('addDependency') << {
             deps.addDependency(project);
         }
 
-        Task studioTask = project.task('studio') << {
-            logger.info("Updating mule studio project...")
+        currentTask.description = 'Add a dependency on the studio file descriptor. - Intended for use with tooling'
+
+        currentTask = project.task('studio') << {
+            logger.info('Updating mule studio project...')
             //TODO - Add specific studio customizations
         }
 
-        //this runs the eclipse task first.
-        studioTask.dependsOn 'eclipse'
-
+        currentTask.description = 'Update MuleStudio project metadata.'
+        currentTask.dependsOn 'eclipse'
 
 
     }
