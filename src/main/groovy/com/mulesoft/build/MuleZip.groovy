@@ -47,6 +47,9 @@ class MuleZip extends Jar {
                 classpath ? classpath.filter {File file -> file.isFile()} : []
             }
         }
+
+        setDestinationDir(new File("build/"))
+
     }
 
     @InputFiles @Optional

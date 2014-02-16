@@ -6,4 +6,4 @@
 /out
 target/
 /sample-project/build
-
+.gradletasknamecache

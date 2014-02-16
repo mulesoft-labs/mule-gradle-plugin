@@ -95,19 +95,35 @@ class MulePlugin implements Plugin<Project> {
         }
 
         project.repositories {
+
+            //local maven repository
             mavenLocal()
 
+            //central maven repository
             mavenCentral()
 
+            //the CE mule repository.
             maven {
-                url "https://repository-master.mulesoft.org/nexus/content/repositories/public/"
+                url "http://repository.mulesoft.org/releases/"
             }
 
+            //jboss repository, always useful.
             maven {
                 url "https://repository.jboss.org/nexus/content/repositories/"
             }
         }
 
+        Task ziptask = addZipDistributionTask(project)
+
+        ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask)
+        //make it believe it is a war
+        zipArtifact.setType("war")
+
+        project.extensions.getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact)
+
+    }
+
+    private Task addZipDistributionTask(Project project) {
         //the packaging logic.
         Task ziptask = project.tasks.create("mulezip", MuleZip.class);
 
@@ -145,8 +161,6 @@ class MulePlugin implements Plugin<Project> {
         ziptask.description = "Generate the MuleApp deployable zip archive"
         ziptask.group = BasePlugin.BUILD_GROUP
 
-        ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask)
-        project.extensions.getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact)
-
+        return ziptask
     }
 }
