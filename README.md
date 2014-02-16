@@ -63,6 +63,6 @@ apply plugin: 'mulestudio'
 For the time being this combines the Eclipse Plugin and the Mule plugin, so, in order to update the studio classpath,
 just run:
 
-    $ gradle clean eclipse
+    $ gradle clean studio
 
 In the future extra functionality will be added to polish the studio integration.
