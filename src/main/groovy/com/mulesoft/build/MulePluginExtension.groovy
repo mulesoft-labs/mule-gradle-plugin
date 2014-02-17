@@ -27,4 +27,9 @@ class MulePluginExtension {
      */
     String version = '3.4.1'
 
+    /**
+     * The standalone path.
+     */
+    String installPath = null
+
 }

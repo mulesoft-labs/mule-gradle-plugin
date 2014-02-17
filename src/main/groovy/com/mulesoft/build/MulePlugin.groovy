@@ -45,6 +45,13 @@ class MulePlugin implements Plugin<Project> {
 
         MulePluginExtension mule = project.mule
 
+        //apply plugins that also read the config
+
+        //add the tasks related to deployment
+        project.apply(plugin: 'mule-deploy')
+
+
+
         //add providedCompile and providedRuntime for dependency management.
         //this is needed because we'll be generating a container - based archive.
         project.configurations {
