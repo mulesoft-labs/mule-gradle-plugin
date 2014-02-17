@@ -50,6 +50,8 @@ class MulePlugin implements Plugin<Project> {
         //add the tasks related to deployment
         project.apply(plugin: 'mule-deploy')
 
+        //add the tasks related to execution
+        project.apply(plugin: 'mule-run')
 
 
         //add providedCompile and providedRuntime for dependency management.
