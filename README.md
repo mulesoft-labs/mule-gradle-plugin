@@ -76,7 +76,7 @@ Many apps can be run and tested directly by executing:
 
 The build can be configured to deploy the resulting artifact on a mule standalone server:
 
-    mule.installPath = /path/to/mule/home
+    mule.installPath = '/path/to/mule/home'
 
 Alternatively it can be configured through the MULE_HOME environment variable. Finally to deploy:
 
