@@ -15,6 +15,7 @@
  */
 package com.mulesoft.build.studio
 
+import com.mulesoft.build.MulePluginConstants
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -57,6 +58,7 @@ class StudioPlugin implements Plugin<Project> {
         }
 
         currentTask.description = 'Add a dependency on the studio file descriptor. - Intended for use with tooling'
+        currentTask.group = MulePluginConstants.STUDIO_GROUP
 
         currentTask = project.task('studio') << {
             logger.info('Updating mule studio project...')
@@ -64,6 +66,7 @@ class StudioPlugin implements Plugin<Project> {
         }
 
         currentTask.description = 'Update MuleStudio project metadata.'
+        currentTask.group = "IDE"
         currentTask.dependsOn 'eclipse'
 
 

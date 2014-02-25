@@ -36,7 +36,6 @@ class MuleRunTask extends JavaExec {
     static final String CONFIG_RESOURCES_KEY = 'config.resources'
 
     MuleRunTask() {
-        description = TASK_DESC;
         main = 'org.mule.MuleServer'
 
         def config = ['-config']

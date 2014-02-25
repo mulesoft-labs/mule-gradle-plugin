@@ -16,7 +16,7 @@
 
 package com.mulesoft.build.deploy
 
-import com.mulesoft.build.MulePluginExtension
+import com.mulesoft.build.MulePluginConstants
 import org.gradle.api.Plugin;
 import org.gradle.api.Project
 import org.gradle.api.Task;
@@ -39,7 +39,7 @@ class MuleDeployPlugin implements Plugin<Project> {
 
         //depends on the generic build
         task.dependsOn 'build'
-
+        task.group = MulePluginConstants.MULE_GROUP
     }
 }
 

@@ -13,24 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.mulesoft.build.run
-
-import com.mulesoft.build.MulePluginConstants
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.tasks.JavaExec
+package com.mulesoft.build
 
 /**
- * Created by juancavallotti on 16/02/14.
+ * Created by juancavallotti on 25/02/14.
  */
-class MuleRunPlugin implements Plugin<Project> {
-    @Override
-    void apply(Project project) {
+class MulePluginConstants {
 
-        MuleRunTask task = project.tasks.create("runApp", MuleRunTask)
-        task.classpath = project.sourceSets.main.runtimeClasspath
-        task.description = MuleRunTask.TASK_DESC;
-        task.group = MulePluginConstants.MULE_GROUP
-    }
+    public final static String MULE_GROUP = "Mule ESB"
+
+    public final static String STUDIO_GROUP = "Mule Studio"
 }
