@@ -66,3 +66,19 @@ just run:
     $ gradle clean studio
 
 In the future extra functionality will be added to polish the studio integration.
+
+Special Features
+----
+
+Many apps can be run and tested directly by executing:
+
+    $ gradle runApp
+
+The build can be configured to deploy the resulting artifact on a mule standalone server:
+
+    mule.installPath = /path/to/mule/home
+
+Alternatively it can be configured through the MULE_HOME environment variable. Finally to deploy:
+
+    $ gradle install
+
