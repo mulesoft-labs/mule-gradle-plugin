@@ -27,9 +27,11 @@ class MuleRunTask extends JavaExec {
 
     static final String TASK_DESC = 'Executes the project for testing in an embedded Mule Server'
 
-    static final String MULE_DEFAULT_CONFIG = 'src/main/app/mule-config.xml'
+    static final String APP_DIR = 'src/main/app/'
 
-    static final String MULE_DEPLOY = 'src/main/app/mule-deploy.properties'
+    static final String MULE_DEFAULT_CONFIG = APP_DIR + 'mule-config.xml'
+
+    static final String MULE_DEPLOY = APP_DIR + 'mule-deploy.properties'
 
     static final String CONFIG_RESOURCES_KEY = 'config.resources'
 
@@ -37,22 +39,23 @@ class MuleRunTask extends JavaExec {
         description = TASK_DESC;
         main = 'org.mule.MuleServer'
 
-        dependsOn 'classes'
+        def config = ['-config']
 
-        doFirst {
+        //check if mule-config exists
+        File deployProps = new File(MULE_DEPLOY)
 
-            //check if mule-config exists
-            File deployProps = new File(MULE_DEPLOY)
-
-            if (!deployProps.exists()) {
-                jvmArgs = ['-config', MULE_DEFAULT_CONFIG]
-                return
-            }
-
-            Properties props = new Properties(deployProps.newInputStream())
-
-            jvmArgs = ['-config', props.getProperty(CONFIG_RESOURCES_KEY)]
-
+        if (!deployProps.exists()) {
+            config.add(MULE_DEFAULT_CONFIG);
+            this.args = config
+            logger.info("JVM Arguments for running the app: $config")
+            return
         }
+
+        Properties props = new Properties()
+        props.load(deployProps.newInputStream())
+
+        config.addAll(props.getProperty(CONFIG_RESOURCES_KEY).split(' ').collect({APP_DIR + it}))
+        logger.info("JVM Arguments for running the app: $config")
+        this.args = config
     }
 }
