@@ -19,6 +19,7 @@ import com.mulesoft.build.MulePluginConstants
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.plugins.ide.eclipse.model.EclipseModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -41,6 +42,14 @@ class StudioPlugin implements Plugin<Project> {
 
         //apply the base plugin and then customize.
         project.apply(plugin: 'eclipse')
+
+
+        EclipseModel eclipseConfig = project.extensions.getByType(EclipseModel);
+
+        //use the DSL to customize how the eclipse project is created.
+        eclipseConfig.project {
+            natures = ['org.mule.tooling.core.muleNature']
+        }
 
         //initialize the studio dependencies.
         //TODO - this might be better if delayed until last moment for better flexibility
