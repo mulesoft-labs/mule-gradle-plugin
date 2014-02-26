@@ -138,17 +138,17 @@ class MulePlugin implements Plugin<Project> {
 
         //add the app directory yo the root of the zip file.
         ziptask.from {
-            return "src/main/app"
+            return 'src/main/app'
         }
 
         //add the data-mapper mappings
         ziptask.from {
-            return "mappings"
+            return 'mappings'
         }
 
         //add the APIKit specific files.
         ziptask.from {
-            return "src/main/api"
+            return 'src/main/api'
         }
 
         ziptask.dependsOn {
