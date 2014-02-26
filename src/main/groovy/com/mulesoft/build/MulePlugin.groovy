@@ -167,7 +167,7 @@ class MulePlugin implements Plugin<Project> {
 
         }
 
-        ziptask.description = "Generate the MuleApp deployable zip archive"
+        ziptask.description = "Generate a deployable zip archive for this Mule APP"
         ziptask.group = BasePlugin.BUILD_GROUP
 
         return ziptask

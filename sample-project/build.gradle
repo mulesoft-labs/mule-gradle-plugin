@@ -11,3 +11,7 @@ buildscript {
 apply plugin: 'mulestudio'
 
 mule.version = '3.4.0'
+
+dependencies {
+	compile group: 'org.mule.modules', name: 'mule-module-apikit-plugin', version: '1.1'
+}
