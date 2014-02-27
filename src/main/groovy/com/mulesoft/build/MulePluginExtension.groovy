@@ -25,11 +25,15 @@ class MulePluginExtension {
     /**
      * The mule version against we want to build.
      */
-    String version = '3.4.1'
+    String version = '3.4.0'
 
     /**
      * The standalone path.
      */
     String installPath = null
 
+    /**
+     * Enterprise edition, community by default
+     */
+    boolean muleEnterprise = false
 }
