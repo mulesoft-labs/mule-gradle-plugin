@@ -33,7 +33,9 @@ class MulePluginExtension {
     String installPath = null
 
     /**
-     * Enterprise edition, community by default
+     * Enterprise edition, by default is true, disable this if you wish to have a lighter build. By making it false
+     * it will disable all the enterprise features in your project build, if you plan to use MuleStudio, then leave it
+     * as true
      */
-    boolean muleEnterprise = false
+    boolean muleEnterprise = true
 }
