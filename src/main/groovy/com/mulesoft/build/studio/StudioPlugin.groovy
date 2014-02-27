@@ -16,9 +16,11 @@
 package com.mulesoft.build.studio
 
 import com.mulesoft.build.MulePluginConstants
+import com.mulesoft.build.MulePluginExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.plugins.ide.eclipse.model.BuildCommand
 import org.gradle.plugins.ide.eclipse.model.EclipseModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -44,13 +46,16 @@ class StudioPlugin implements Plugin<Project> {
         project.apply(plugin: 'eclipse')
 
 
-        EclipseModel eclipseConfig = project.extensions.getByType(EclipseModel);
+        EclipseModel eclipseConfig = project.extensions.getByType(EclipseModel)
 
         //use the DSL to customize how the eclipse project is created.
         eclipseConfig.project {
             natures = ['org.mule.tooling.core.muleNature', 'org.eclipse.jdt.core.javanature']
-            buiildCommands = ['org.mule.tooling.core.muleBuilder']
+            buildCommands = [new BuildCommand('org.mule.tooling.core.muleBuilder')]
         }
+
+        //get the mule project configuration
+        MulePluginExtension mule = project.extensions.getByType(MulePluginExtension)
 
         //initialize the studio dependencies.
         //TODO - this might be better if delayed until last moment for better flexibility
@@ -72,7 +77,12 @@ class StudioPlugin implements Plugin<Project> {
 
         currentTask = project.task('studio') << {
             logger.info('Updating mule studio project...')
-            //TODO - Add specific studio customizations
+
+            //create the mule-project.xml file if it does not exist
+            StudioProject studioProject = new StudioProject(projectName: project.name, muleConfig: mule)
+
+            //create the mule-project if needed
+            studioProject.createStudioProjectIfNecessary()
         }
 
         currentTask.description = 'Update MuleStudio project metadata.'
