@@ -34,12 +34,14 @@ class MuleDeployPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
 
-        //define the task
-        Task task = project.tasks.create('install', InstallInRuntime)
+        project.afterEvaluate { proj ->
+            //define the task
+            Task task = proj.tasks.create('install', InstallInRuntime)
 
-        //depends on the generic build
-        task.dependsOn 'build'
-        task.group = MulePluginConstants.MULE_GROUP
+            //depends on the generic build
+            task.dependsOn 'build'
+            task.group = MulePluginConstants.MULE_GROUP
+        }
     }
 }
 

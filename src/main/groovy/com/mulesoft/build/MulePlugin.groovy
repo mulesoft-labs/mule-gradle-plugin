@@ -43,8 +43,6 @@ class MulePlugin implements Plugin<Project> {
         //add the mule extension.
         project.extensions.create("mule", MulePluginExtension)
 
-        MulePluginExtension mule = project.mule
-
         //apply plugins that also read the config
 
         //add the tasks related to deployment
@@ -78,30 +76,7 @@ class MulePlugin implements Plugin<Project> {
             }
         }
 
-
-        //get the mule version.
-        project.dependencies {
-            providedCompile (
-                    [group: 'org.mule', name: 'mule-core', version: mule.version],
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-boot-ee', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-spring-config', version: mule.version],
-                    [group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: mule.version],
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-data-mapper', version: mule.version],
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-spring-config-ee', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-file', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-http', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-jdbc', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-jms', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-vm', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-client', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-cxf', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-json', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-management', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-scripting', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-sxc', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-xml', version: mule.version]
-            )
-        }
+        project.afterEvaluate { proj -> addDependenciesToProject(proj) }
 
         project.repositories {
 
@@ -172,4 +147,36 @@ class MulePlugin implements Plugin<Project> {
 
         return ziptask
     }
+
+
+    private void addDependenciesToProject(Project project) {
+
+        MulePluginExtension mule = project.mule
+
+        //get the mule version.
+        project.dependencies {
+            providedCompile (
+                    [group: 'org.mule', name: 'mule-core', version: mule.version],
+                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-boot-ee', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-spring-config', version: mule.version],
+                    [group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: mule.version],
+                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-data-mapper', version: mule.version],
+                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-spring-config-ee', version: mule.version],
+                    [group: 'org.mule.transports', name: 'mule-transport-file', version: mule.version],
+                    [group: 'org.mule.transports', name: 'mule-transport-http', version: mule.version],
+                    [group: 'org.mule.transports', name: 'mule-transport-jdbc', version: mule.version],
+                    [group: 'org.mule.transports', name: 'mule-transport-jms', version: mule.version],
+                    [group: 'org.mule.transports', name: 'mule-transport-vm', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-client', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-cxf', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-json', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-management', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-scripting', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-sxc', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-xml', version: mule.version]
+            )
+        }
+    }
+
+
 }

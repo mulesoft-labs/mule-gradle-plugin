@@ -54,8 +54,6 @@ class StudioPlugin implements Plugin<Project> {
             buildCommands = [new BuildCommand('org.mule.tooling.core.muleBuilder')]
         }
 
-        //get the mule project configuration
-        MulePluginExtension mule = project.extensions.getByType(MulePluginExtension)
 
         //initialize the studio dependencies.
         //TODO - this might be better if delayed until last moment for better flexibility
@@ -77,6 +75,9 @@ class StudioPlugin implements Plugin<Project> {
 
         currentTask = project.task('studio') << {
             logger.info('Updating mule studio project...')
+
+            //get the mule project configuration
+            MulePluginExtension mule = project.extensions.getByType(MulePluginExtension)
 
             //create the mule-project.xml file if it does not exist
             StudioProject studioProject = new StudioProject(projectName: project.name, muleConfig: mule)
