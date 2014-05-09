@@ -155,13 +155,17 @@ class MulePlugin implements Plugin<Project> {
 
         //get the mule version.
         project.dependencies {
-            providedCompile (
-                    [group: 'org.mule', name: 'mule-core', version: mule.version],
+            def eeDeps = [
                     [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-boot-ee', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-spring-config', version: mule.version],
                     [group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: mule.version],
                     [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-data-mapper', version: mule.version],
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-spring-config-ee', version: mule.version],
+                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-spring-config-ee', version: mule.version]
+                ]
+            
+            providedCompile (                    
+                    (mule.muleEnterprise ? eeDeps : []) + 
+                    [group: 'org.mule', name: 'mule-core', version: mule.version],
+                    [group: 'org.mule.modules', name: 'mule-module-spring-config', version: mule.version],
                     [group: 'org.mule.transports', name: 'mule-transport-file', version: mule.version],
                     [group: 'org.mule.transports', name: 'mule-transport-http', version: mule.version],
                     [group: 'org.mule.transports', name: 'mule-transport-jdbc', version: mule.version],
