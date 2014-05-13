@@ -109,9 +109,11 @@ class MulePlugin implements Plugin<Project> {
 
     private Task addZipDistributionTask(Project project) {
         //the packaging logic.
-        Task ziptask = project.tasks.create("mulezip", MuleZip.class);
+        Task ziptask = project.tasks.create("mulezip", MuleZip.class)
 
-        //add the app directory yo the root of the zip file.
+        ziptask.dependsOn project.check
+
+        //add the app directory to the root of the zip file.
         ziptask.from {
             return 'src/main/app'
         }
@@ -124,10 +126,6 @@ class MulePlugin implements Plugin<Project> {
         //add the APIKit specific files.
         ziptask.from {
             return 'src/main/api'
-        }
-
-        ziptask.dependsOn {
-            project.convention.getPlugin(JavaPluginConvention.class).sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).runtimeClasspath
         }
 
         ziptask.classpath {
