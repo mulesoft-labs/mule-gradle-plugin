@@ -20,6 +20,7 @@ import com.mulesoft.build.MulePluginExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
 import org.gradle.plugins.ide.eclipse.model.BuildCommand
 import org.gradle.plugins.ide.eclipse.model.EclipseModel
 import org.slf4j.Logger
@@ -60,6 +61,18 @@ class StudioPlugin implements Plugin<Project> {
             ]
         }
 
+        eclipseConfig.classpath {
+            //remove provided configurations from the eclipse classpath
+            //since they will be in the mule runtime anyway, and if not
+            //the user should install it on the mule runtime to preserve semantics
+            minusConfigurations += project.configurations.providedCompile
+            minusConfigurations += project.configurations.providedRuntime
+            minusConfigurations += project.configurations.providedTestCompile
+            minusConfigurations += project.configurations.providedTestRuntime
+
+            containers 'org.eclipse.jdt.launching.JRE_CONTAINER', 'MULE_RUNTIME'
+
+        }
 
         //initialize the studio dependencies.
         //TODO - this might be better if delayed until last moment for better flexibility
@@ -96,6 +109,20 @@ class StudioPlugin implements Plugin<Project> {
         currentTask.group = "IDE"
         currentTask.dependsOn 'eclipse'
 
+        //remove all provided dependencies since they should be part of the mule runtime
+        //if you have additional provided dependencies, you will have to add them manually to studio
+        currentTask = project.task('studioClasspath') << {
+            logger.info('Removing provided from eclipe classpath')
+
+            project.configurations.providedCompile.allDependencies.clear()
+            project.configurations.providedRuntime.allDependencies.clear()
+            project.configurations.providedTestCompile.allDependencies.clear()
+            project.configurations.providedTestRuntime.allDependencies.clear()
+        }
+
+        project.tasks.getByName('eclipseClasspath').dependsOn('studioClasspath')
 
     }
+
+
 }

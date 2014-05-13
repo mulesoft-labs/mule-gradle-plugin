@@ -57,14 +57,26 @@ class MulePlugin implements Plugin<Project> {
         project.configurations {
 
             providedCompile {
-                description = "Compile time dependencies that should not be part of the final zip file."
+                description = 'Compile time dependencies that should not be part of the final zip file.'
                 visible = false
             }
 
             providedRuntime {
-                description = "Runtime dependencies that should not be part of the final zip file."
+                description = 'Runtime dependencies that should not be part of the final zip file.'
                 visible = false
                 extendsFrom providedCompile
+            }
+
+            providedTestCompile {
+                description = 'Compile time test dependencies that are already provided by tooling I.E. MuleStudio.'
+                visible = false
+            }
+
+            providedTestRuntime {
+                description = 'Runtime time test dependencies that are already provided by tooling I.E. MuleStudio.'
+                visible = false
+                extendsFrom providedTestCompile
+
             }
 
             compile {
@@ -74,6 +86,15 @@ class MulePlugin implements Plugin<Project> {
             runtime {
                 extendsFrom providedRuntime
             }
+
+            testCompile {
+                extendsFrom providedTestCompile
+            }
+
+            testRuntime {
+                extendsFrom providedTestRuntime
+            }
+
         }
 
         project.afterEvaluate { proj -> addDependenciesToProject(proj) }
@@ -187,7 +208,7 @@ class MulePlugin implements Plugin<Project> {
                     [group: 'org.mule.modules', name: 'mule-module-xml', version: mule.version]
             )
 
-            testCompile (
+            providedTestCompile (
                     testDeps
             )
         }
