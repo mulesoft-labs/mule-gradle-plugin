@@ -50,8 +50,14 @@ class StudioPlugin implements Plugin<Project> {
 
         //use the DSL to customize how the eclipse project is created.
         eclipseConfig.project {
-            natures = ['org.mule.tooling.core.muleNature', 'org.eclipse.jdt.core.javanature']
-            buildCommands = [new BuildCommand('org.mule.tooling.core.muleBuilder')]
+            natures = [
+                    'org.mule.tooling.core.muleNature',
+                    'org.eclipse.jdt.core.javanature'
+            ]
+            buildCommands = [
+                    new BuildCommand('org.mule.tooling.core.muleBuilder'),
+                    new BuildCommand('org.eclipse.jdt.core.javabuilder')
+            ]
         }
 
 
