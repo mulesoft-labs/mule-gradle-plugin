@@ -153,6 +153,15 @@ class MulePlugin implements Plugin<Project> {
 
         //get the mule version.
         project.dependencies {
+            def testDeps = [];
+
+            if (!mule.disableJunit) {
+                testDeps = [
+                        [group: 'org.mule.tests', name: 'mule-tests-functional', version: mule.version],
+                        [group: 'junit', name: 'junit', 'version': mule.junitVersion]
+                ];
+            }
+
             def eeDeps = [
                     [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-boot-ee', version: mule.version],
                     [group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: mule.version],
@@ -176,6 +185,10 @@ class MulePlugin implements Plugin<Project> {
                     [group: 'org.mule.modules', name: 'mule-module-scripting', version: mule.version],
                     [group: 'org.mule.modules', name: 'mule-module-sxc', version: mule.version],
                     [group: 'org.mule.modules', name: 'mule-module-xml', version: mule.version]
+            )
+
+            testCompile (
+                    testDeps
             )
         }
     }

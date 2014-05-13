@@ -38,4 +38,15 @@ class MulePluginExtension {
      * as true
      */
     boolean muleEnterprise = true
+
+    /**
+     * Mule test facilities are based on JUnit so this should keep always default value, nevertheless providing a backdoor
+     * for other test backends.
+     */
+    boolean disableJunit = false
+
+    /**
+     * The version of JUnit used to run tests.
+     */
+    String junitVersion = '4.9'
 }
