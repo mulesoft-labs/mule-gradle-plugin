@@ -109,19 +109,6 @@ class StudioPlugin implements Plugin<Project> {
         currentTask.group = "IDE"
         currentTask.dependsOn 'eclipse'
 
-        //remove all provided dependencies since they should be part of the mule runtime
-        //if you have additional provided dependencies, you will have to add them manually to studio
-        currentTask = project.task('studioClasspath') << {
-            logger.info('Removing provided from eclipe classpath')
-
-            project.configurations.providedCompile.allDependencies.clear()
-            project.configurations.providedRuntime.allDependencies.clear()
-            project.configurations.providedTestCompile.allDependencies.clear()
-            project.configurations.providedTestRuntime.allDependencies.clear()
-        }
-
-        project.tasks.getByName('eclipseClasspath').dependsOn('studioClasspath')
-
     }
 
 

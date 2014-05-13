@@ -9,11 +9,11 @@
 	</natures>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
+			<name>org.mule.tooling.core.muleBuilder</name>
 			<arguments/>
 		</buildCommand>
 		<buildCommand>
-			<name>org.mule.tooling.core.muleBuilder</name>
+			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments/>
 		</buildCommand>
 	</buildSpec>
