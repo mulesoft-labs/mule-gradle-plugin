@@ -112,7 +112,12 @@ class MulePlugin implements Plugin<Project> {
 
                     //the CE mule repository.
                     maven {
-                        url "http://repository.mulesoft.org/releases/"
+                        url 'http://repository.mulesoft.org/releases/'
+                    }
+
+                    //mule build dependencies.
+                    maven {
+                        url 'http://dist.codehaus.org/mule/dependencies/maven2/'
                     }
 
                     if (proj.mule.muleEnterprise) {
