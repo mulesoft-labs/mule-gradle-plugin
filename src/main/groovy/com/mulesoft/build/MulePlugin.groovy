@@ -41,7 +41,7 @@ class MulePlugin implements Plugin<Project> {
         project.apply(plugin: 'java')
 
         //add the mule extension.
-        project.extensions.create("mule", MulePluginExtension)
+        project.extensions.create('mule', MulePluginExtension)
 
         //apply plugins that also read the config
 
@@ -123,8 +123,8 @@ class MulePlugin implements Plugin<Project> {
                     if (proj.mule.muleEnterprise) {
 
                         if (proj.mule.enterpriseRepoUsername.length() == 0) {
-                            logger.warn("muleEnterprise is enabled but no enterprise repository credentials are configured.")
-                            logger.warn("Please set the enterpriseRepoUsername and enterpriseRepoPassword variables.")
+                            logger.warn('muleEnterprise is enabled but no enterprise repository credentials are configured.')
+                            logger.warn('Please set the enterpriseRepoUsername and enterpriseRepoPassword variables.')
                         }
 
                         maven {
@@ -132,13 +132,13 @@ class MulePlugin implements Plugin<Project> {
                                 username proj.mule.enterpriseRepoUsername
                                 password proj.mule.enterpriseRepoPassword
                             }
-                            url "https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/"
+                            url 'https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/'
                         }
                     }
 
                     //jboss repository, always useful.
                     maven {
-                        url "https://repository.jboss.org/nexus/content/repositories/"
+                        url 'https://repository.jboss.org/nexus/content/repositories/'
                     }
                 }
 
@@ -156,7 +156,7 @@ class MulePlugin implements Plugin<Project> {
 
     private Task addZipDistributionTask(Project project) {
         //the packaging logic.
-        Task ziptask = project.tasks.create("mulezip", MuleZip.class)
+        Task ziptask = project.tasks.create('mulezip', MuleZip.class)
 
         ziptask.dependsOn project.check
 
@@ -187,7 +187,7 @@ class MulePlugin implements Plugin<Project> {
 
         }
 
-        ziptask.description = "Generate a deployable zip archive for this Mule APP"
+        ziptask.description = 'Generate a deployable zip archive for this Mule APP'
         ziptask.group = BasePlugin.BUILD_GROUP
 
         return ziptask

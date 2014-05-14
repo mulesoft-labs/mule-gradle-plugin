@@ -47,7 +47,7 @@ class StudioDependencies {
         }
 
         if (!deps.exists()) {
-            logger.warn("Studio specific dependencies file ${deps.absolutePath} does not exist")
+            logger.info("Studio specific dependencies file ${deps.absolutePath} does not exist")
             return []
         }
 
