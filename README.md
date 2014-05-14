@@ -34,7 +34,7 @@ buildscript {
 
 apply plugin: 'mule'
 
-mule.version = '3.5.0-bighorn'
+mule.version = '3.5.0'
 
 ```
 
@@ -48,6 +48,27 @@ This plugin also adds two dependency scopes to gradle that are important for con
   - providedRuntime: Libraries that are available on the runtime itself.
   
 New features will be added in the future.
+
+Enterprise Features
+----
+
+By default gradle projects are enterprise-enabled, this is controlled by `mule.muleEnterprise` project configuration.
+
+Mulesoft's enterprise artifacts are deployed in a password-protected nexus instance. The plugin allows you to specify the
+ credentials so gradle can resolve these dependencies.
+ 
+In order to use this repository, an enterprise user can specify these credentials in the build script using the following
+ settings:
+ 
+```groovy
+
+mule.enterpriseRepoUsername = 'your-username'
+mule.enterpriseRepoPassword = 'your-password'
+
+```
+Currently, externalization of these credentials is left to the user's preferred method.
+
+This repo will not be enabled if `mule.muleEnterprise` is set to false.
 
 Working with MuleStudio
 ----
@@ -81,4 +102,3 @@ The build can be configured to deploy the resulting artifact on a mule standalon
 Alternatively it can be configured through the MULE_HOME environment variable. Finally to deploy:
 
     $ gradle install
-
