@@ -49,4 +49,17 @@ class MulePluginExtension {
      * The version of JUnit used to run tests.
      */
     String junitVersion = '4.9'
+
+    /**
+     * Credentials for the EE customer repository, this takes effect if muleEnterprise = true
+     * These credentials may be obtained through a support ticket.
+     */
+    String enterpriseRepoUsername = ''
+
+    /**
+     * Password for customer repository.
+     */
+    String enterpriseRepoPassword = ''
+
+
 }

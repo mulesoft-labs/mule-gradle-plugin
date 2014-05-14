@@ -97,25 +97,46 @@ class MulePlugin implements Plugin<Project> {
 
         }
 
-        project.afterEvaluate { proj -> addDependenciesToProject(proj) }
+        project.afterEvaluate {
+            proj ->
+            MuleDependenciesConfigurer configurer = new MuleDependenciesConfigurer();
+                configurer.addDependenciesToProject(proj)
 
-        project.repositories {
+                project.repositories {
 
-            //local maven repository
-            mavenLocal()
+                    //local maven repository
+                    mavenLocal()
 
-            //central maven repository
-            mavenCentral()
+                    //central maven repository
+                    mavenCentral()
 
-            //the CE mule repository.
-            maven {
-                url "http://repository.mulesoft.org/releases/"
-            }
+                    //the CE mule repository.
+                    maven {
+                        url "http://repository.mulesoft.org/releases/"
+                    }
 
-            //jboss repository, always useful.
-            maven {
-                url "https://repository.jboss.org/nexus/content/repositories/"
-            }
+                    if (proj.mule.muleEnterprise) {
+
+                        if (proj.mule.enterpriseRepoUsername.length() == 0) {
+                            logger.warn("muleEnterprise is enabled but no enterprise repository credentials are configured.")
+                            logger.warn("Please set the enterpriseRepoUsername and enterpriseRepoPassword variables.")
+                        }
+
+                        maven {
+                            credentials {
+                                username proj.mule.enterpriseRepoUsername
+                                password proj.mule.enterpriseRepoPassword
+                            }
+                            url "https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/"
+                        }
+                    }
+
+                    //jboss repository, always useful.
+                    maven {
+                        url "https://repository.jboss.org/nexus/content/repositories/"
+                    }
+                }
+
         }
 
         Task ziptask = addZipDistributionTask(project)
@@ -168,51 +189,7 @@ class MulePlugin implements Plugin<Project> {
     }
 
 
-    private void addDependenciesToProject(Project project) {
 
-        MulePluginExtension mule = project.mule
-
-        //get the mule version.
-        project.dependencies {
-            def testDeps = [];
-
-            if (!mule.disableJunit) {
-                testDeps = [
-                        [group: 'org.mule.tests', name: 'mule-tests-functional', version: mule.version],
-                        [group: 'junit', name: 'junit', 'version': mule.junitVersion]
-                ];
-            }
-
-            def eeDeps = [
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-boot-ee', version: mule.version],
-                    [group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: mule.version],
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-data-mapper', version: mule.version],
-                    [group: 'com.mulesoft.muleesb.modules', name: 'mule-module-spring-config-ee', version: mule.version]
-                ]
-            
-            providedCompile (                    
-                    (mule.muleEnterprise ? eeDeps : []) + 
-                    [group: 'org.mule', name: 'mule-core', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-spring-config', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-file', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-http', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-jdbc', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-jms', version: mule.version],
-                    [group: 'org.mule.transports', name: 'mule-transport-vm', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-client', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-cxf', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-json', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-management', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-scripting', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-sxc', version: mule.version],
-                    [group: 'org.mule.modules', name: 'mule-module-xml', version: mule.version]
-            )
-
-            providedTestCompile (
-                    testDeps
-            )
-        }
-    }
 
 
 }
