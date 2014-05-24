@@ -156,30 +156,34 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
 
         List<Map> ret = []
 
-        ret.addAll mule.coreLibs.collectAll {String element ->
-            return [group: COMMUNITY_GROUPID, name: MULE_DEPS_PREFIX + element, version: mule.version]
-        }
+        logger.debug('Collecting dependencies for coreLibs')
+        ret.addAll(doCollectDependencies(mule.coreLibs, COMMUNITY_GROUPID, MULE_DEPS_PREFIX))
+        logger.debug('Collecting dependencies for modules')
+        ret.addAll(doCollectDependencies(mule.modules, COMMUNITY_MODULES_GROUPID, MULE_MODULES_PREFIX))
+        logger.debug('Collecting dependencies for transports')
+        ret.addAll(doCollectDependencies(mule.transports, COMMUNITY_TRANSPORTS_GROUPID, MULE_TRANSPORTS_PREFIX))
 
-        ret.addAll mule.modules.collectAll {String element ->
-            return [group: COMMUNITY_MODULES_GROUPID, name: MULE_MODULES_PREFIX + element, version: mule.version]
-        }
-        ret.addAll mule.transports.collectAll {String element ->
-            return [group: COMMUNITY_TRANSPORTS_GROUPID, name: MULE_TRANSPORTS_PREFIX + element, version: mule.version]
-        }
 
         if (!mule.muleEnterprise) {
             return ret;
         }
 
-        ret.addAll mule.eeCoreLibs.collectAll {String element ->
-            return [group: EE_GROUPID, name: MULE_DEPS_PREFIX + element, version: mule.version]
-        }
-        ret.addAll mule.eeModules.collectAll {String element ->
-            return [group: EE_MODULES_GROUPID, name: MULE_MODULES_PREFIX + element, version: mule.version]
-        }
-        ret.addAll mule.eeTransports.collectAll {String element ->
-            return [group: EE_TRANSPORTS_GROUPID, name: MULE_TRANSPORTS_PREFIX + element, version: mule.version]
-        }
+        logger.debug('Collecting dependencies for eeCoreLibs')
+        ret.addAll(doCollectDependencies(mule.eeCoreLibs, EE_GROUPID, MULE_DEPS_PREFIX))
+        logger.debug('Collecting dependencies for eeModules')
+        ret.addAll(doCollectDependencies(mule.eeModules, EE_MODULES_GROUPID, MULE_MODULES_PREFIX))
+        logger.debug('Collecting dependencies for eeTransports')
+        ret.addAll(doCollectDependencies(mule.eeTransports, EE_TRANSPORTS_GROUPID, MULE_TRANSPORTS_PREFIX))
 
+        return ret;
     }
+
+    List<Map> doCollectDependencies(Set<String> collection, String group, String prefix) {
+        logger.debug("Collecting dependencies for $group in prefix $prefix")
+
+        return collection.collect({String value ->
+            [group: group, name: prefix + value, version: mule.version]
+        }) as List
+    }
+
 }

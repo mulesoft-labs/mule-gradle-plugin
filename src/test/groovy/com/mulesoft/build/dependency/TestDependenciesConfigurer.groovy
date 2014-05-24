@@ -16,6 +16,7 @@
 package com.mulesoft.build.dependency
 
 import com.mulesoft.build.MulePluginExtension
+import org.gradle.api.Project
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -43,6 +44,29 @@ class TestDependenciesConfigurer {
         assertThat(extension.transports, hasItem('http'))
         assertThat(extension.eeCoreLibs, hasItem('core-ee'))
         assertThat(extension.eeModules, hasItem('spring-config-ee'))
+    }
+
+    @Test
+    public void testMuleDependenciesConfigurerBuildDependencies() throws Exception {
+        MuleProjectDependenciesConfigurer configurer = new MuleProjectDependenciesConfigurer()
+
+
+        MulePluginExtension extension = new MulePluginExtension()
+
+
+        //inject dependencies.
+        configurer.mule = extension
+
+        configurer.applyDefaults()
+        List<Map> deps = configurer.buildDependencies()
+
+        assertThat(deps.size(), greaterThan(0))
+
+        //check for some values
+        assertThat(deps, hasItem([group:'org.mule', name:'mule-core', version:extension.version]))
+        assertThat(deps, hasItem([group:'org.mule.modules', name:'mule-module-spring-config', version:extension.version]))
+        assertThat(deps, hasItem([group:'com.mulesoft.muleesb.modules', name:'mule-module-spring-config-ee', version:extension.version]))
+
     }
 
 }
