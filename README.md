@@ -1,3 +1,18 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Gradle Plugin for Building Mule Apps](#gradle-plugin-for-building-mule-apps)
+  - [Install the plugin locally](#install-the-plugin-locally)
+  - [Enabling your project to build through the Command Line](#enabling-your-project-to-build-through-the-command-line)
+  - [Enterprise Features](#enterprise-features)
+  - [Working with MuleStudio](#working-with-mulestudio)
+  - [Fine-grained Control over Mule Components](#fine-grained-control-over-mule-components)
+  - [Special Features](#special-features)
+  - [Mule Embedded in Java Apps](#mule-embedded-in-java-apps)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 Gradle Plugin for Building Mule Apps
 ==================
 
