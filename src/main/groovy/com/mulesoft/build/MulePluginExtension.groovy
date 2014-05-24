@@ -61,5 +61,41 @@ class MulePluginExtension {
      */
     String enterpriseRepoPassword = ''
 
+    /**
+     * Processed after the default libs, modules, transports has been configured, this is the preferred way of customizing
+     * modules.
+     */
+    Closure<Void> components = null
 
+    /**
+     * Mule core libraries, this normally should not be modified, if empty after project evaluation, defaults will be
+     * applied.
+     */
+    Set<String> coreLibs = []
+
+    /**
+     * Mule enterprise core libraries, this normally should not be modified, if empty after project evaluation, defaults
+     * will be applied.
+     */
+    Set<String> eeCoreLibs = []
+
+    /**
+     * Community open-source modules to be included. If left empty, defaults will be added.
+     */
+    Set<String> modules = []
+
+    /**
+     * Community open-source transports to be included. If left empty, defaults will be added.
+     */
+    Set<String> transports = []
+
+    /**
+     * Paid enterprise modules to be included. If left empty, defaults will be added, only included if muleEnterprise = true
+     */
+    Set<String> eeModules = []
+
+    /**
+     * Paid enterprise modules to be included. If left empty, defaults will be added, only included if muleEnterprise = true
+     */
+    Set<String> eeTransports = []
 }

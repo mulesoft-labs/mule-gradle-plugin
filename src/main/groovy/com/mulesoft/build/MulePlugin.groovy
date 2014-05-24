@@ -25,6 +25,7 @@ import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -44,6 +45,9 @@ class MulePlugin implements Plugin<Project> {
         project.extensions.create('mule', MulePluginExtension)
 
         //apply plugins that also read the config
+
+        //add the mule-esb dependencies
+        project.apply(plugin: 'mule-dependencies')
 
         //add the tasks related to deployment
         project.apply(plugin: 'mule-deploy')
@@ -99,9 +103,6 @@ class MulePlugin implements Plugin<Project> {
 
         project.afterEvaluate {
             proj ->
-            MuleDependenciesConfigurer configurer = new MuleDependenciesConfigurer();
-                configurer.addDependenciesToProject(proj)
-
                 project.repositories {
 
                     //local maven repository
@@ -146,7 +147,7 @@ class MulePlugin implements Plugin<Project> {
 
         Task ziptask = addZipDistributionTask(project)
 
-        ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask)
+        ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask as AbstractArchiveTask)
         //make it believe it is a war
         zipArtifact.setType("war")
 
@@ -192,9 +193,4 @@ class MulePlugin implements Plugin<Project> {
 
         return ziptask
     }
-
-
-
-
-
 }
