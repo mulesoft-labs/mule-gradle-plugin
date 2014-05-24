@@ -88,6 +88,32 @@ just run:
 
 In the future extra functionality will be added to polish the studio integration.
 
+Fine-grained Control over Mule Components
+----
+
+By default, the gradle plugin has configured a fair number of mule components that should satisfy the majority of standard
+build apps, nevertheless this can be tuned at will i.e to remove modules older versions of mule didn't have or to add
+newer modules unknown at the time of building this plugin. Finally, this is useful to troubleshoot build issues, that may
+happen upon unpublished artifacts or restrictive company policies.
+
+NOTE: Newer modules can be added as well as standard dependencies but this method offers a less-verbose approach.
+
+To verify which mule components are installed, just run
+
+    $ gradle muleDeps
+
+Now let's see an example on how to remove the deprecated jdbc transport from the standard build and add the new DB module.
+
+```groovy
+mule.components {
+
+    //exclude jdbc transport, deprecated in 3.5.0
+    transports -= 'jdbc'
+   
+    //include DB module.
+    modules += 'db'
+}
+```
 Special Features
 ----
 
@@ -102,3 +128,26 @@ The build can be configured to deploy the resulting artifact on a mule standalon
 Alternatively it can be configured through the MULE_HOME environment variable. Finally to deploy:
 
     $ gradle install
+
+Mule Embedded in Java Apps
+----
+
+This plugin provides a way for adding mule modules to embedded java apps, this is particularly useful when embedding
+mule integrations inside a Java App. In order to add mule dependencies automatically to the compile configuration:
+
+```groovy
+
+buildscript {
+	dependencies {
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0-SNAPSHOT'
+	}
+
+	repositories {
+		mavenLocal()
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'mule-dependencies' 
+
+```

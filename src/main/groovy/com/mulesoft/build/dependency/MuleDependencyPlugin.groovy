@@ -15,10 +15,12 @@
  */
 package com.mulesoft.build.dependency
 
+import com.mulesoft.build.MulePluginConstants
 import com.mulesoft.build.MulePluginExtension
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -57,6 +59,27 @@ class MuleDependencyPlugin implements Plugin<Project> {
             configurer.applyDependencies()
 
         } as Action<Project>)
+
+        Task printMuleDependencies = project.task('muleDeps')
+        printMuleDependencies << {
+            MulePluginExtension muleExt = project.mule
+
+            println "Core libs (mule.coreLibs): ${muleExt.coreLibs}"
+            println "Modules (mule.modules): ${muleExt.modules}"
+            println "Transports (mule.transports): ${muleExt.transports}"
+
+            if (!muleExt.muleEnterprise) {
+                return
+            }
+
+            println "Core libs EE (mule.eeCoreLibs): ${muleExt.eeCoreLibs}"
+            println "Modules EE (mule.eeModules): ${muleExt.eeModules}"
+            println "Transports EE (mule.eeTransports): ${muleExt.eeTransports}"
+
+        }
+
+        printMuleDependencies.description = "Print the list of configured mule dependencies."
+        printMuleDependencies.group = MulePluginConstants.MULE_GROUP
 
     }
 }
