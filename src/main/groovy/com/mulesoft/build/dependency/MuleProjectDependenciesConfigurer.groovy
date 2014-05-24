@@ -17,6 +17,7 @@ package com.mulesoft.build.dependency
 
 import com.mulesoft.build.MulePluginExtension
 import org.gradle.api.Project
+import org.gradle.util.ConfigureUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -113,7 +114,10 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
 
         //finally call the closure to finalize the customization of the modules.
         if (mule.components) {
-            mule.components()
+            logger.debug('Executing components closure...')
+            ConfigureUtil.configure(mule.components, mule)
+        } else {
+            logger.debug('Components closure not present.')
         }
     }
 
