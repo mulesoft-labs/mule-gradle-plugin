@@ -106,8 +106,8 @@ In the future extra functionality will be added to polish the studio integration
 Fine-grained Control over Mule Components
 ----
 
-By default, the gradle plugin has configured a fair number of mule components that should satisfy the majority of standard
-build apps, nevertheless this can be tuned at will i.e to remove modules older versions of mule didn't have or to add
+By default, this gradle plugin has configured a fair number of mule components that should satisfy the majority of standard
+app builds, nevertheless this can be tuned at will i.e. to remove modules that older versions of mule didn't have or to add
 newer modules unknown at the time of building this plugin. Finally, this is useful to troubleshoot build issues, that may
 happen upon unpublished artifacts or restrictive company policies.
 
