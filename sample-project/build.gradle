@@ -10,5 +10,17 @@ buildscript {
 
 apply plugin: 'mulestudio'
 
-mule.version = '3.4.2'
+mule.version = '3.5.0'
+
+mule.muleEnterprise = false
+
+mule.components {
+
+    //exclude jdbc transport, deprecated in 3.5.0
+    transports -= 'jdbc'
+
+    //include DB module.
+    modules += 'db'
+}
+
 //mule.installPath = '/path/to/mule'
