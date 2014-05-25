@@ -153,6 +153,12 @@ class MulePlugin implements Plugin<Project> {
 
         project.extensions.getByType(DefaultArtifactPublicationSet.class).addCandidate(zipArtifact)
 
+
+        //add the sample project task.
+        Task initProjectTask = project.tasks.create('initMuleProject', InitProjectTask)
+        initProjectTask.description = 'Create the necessary directory structures suitable for a mule project. ' +
+                'Includes sample files.'
+        initProjectTask.group = MulePluginConstants.MULE_GROUP
     }
 
     private Task addZipDistributionTask(Project project) {
