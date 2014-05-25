@@ -5,6 +5,7 @@
 - [Gradle Plugin for Building Mule Apps](#gradle-plugin-for-building-mule-apps)
   - [Install the plugin locally](#install-the-plugin-locally)
   - [Enabling your project to build through the Command Line](#enabling-your-project-to-build-through-the-command-line)
+  - [Start a new Project](#start-a-new-project)
   - [Enterprise Features](#enterprise-features)
   - [Working with MuleStudio](#working-with-mulestudio)
   - [Fine-grained Control over Mule Components](#fine-grained-control-over-mule-components)
@@ -63,6 +64,20 @@ This plugin also adds two dependency scopes to gradle that are important for con
   - providedRuntime: Libraries that are available on the runtime itself.
   
 New features will be added in the future.
+
+Start a new Project
+----
+
+If you create an empty folder and inside an initial `build.gradle` like the one shown in 
+[Enabling your project to build through the Command Line](#enabling-your-project-to-build-through-the-command-line), you
+can create the full project structure automatically, you simply need to run the `initMuleProject` task and the plugin
+ will create the necessary directories and files for you. After the task completes, you'll have a working example project
+ suitable for running with `runApp`, deploying it on a standalone server or in CloudHub.
+
+    $ gradle initMuleProject
+    
+You can as well easily convert it into a MuleStudio project, following the instructions discussed in 
+[Working with MuleStudio](#working-with-mulestudio).
 
 Enterprise Features
 ----
