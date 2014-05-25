@@ -33,28 +33,43 @@ class MuleRunTask extends JavaExec {
 
     static final String MULE_DEPLOY = APP_DIR + 'mule-deploy.properties'
 
+    static final String MULE_APP_PROPS = APP_DIR + 'mule-app.properties'
+
+
     static final String CONFIG_RESOURCES_KEY = 'config.resources'
 
     MuleRunTask() {
         setMain 'org.mule.MuleServer'
 
-        def config = ['-config']
+        def args = []
+
+        //check inf mule-app.properties exist
+        File muleAppProps = new File(MULE_APP_PROPS)
+
+        if (muleAppProps.exists()) {
+            args.add('-props')
+            args.add(MULE_APP_PROPS)
+        }
+
+        args.add('-config')
 
         //check if mule-config exists
         File deployProps = new File(MULE_DEPLOY)
 
+
+
         if (!deployProps.exists()) {
-            config.add(MULE_DEFAULT_CONFIG);
-            this.args = config
-            logger.info("JVM Arguments for running the app: $config")
+            args.add(MULE_DEFAULT_CONFIG);
+            this.args = args
+            logger.info("JVM Arguments for running the app: $args")
             return
         }
 
         Properties props = new Properties()
         props.load(deployProps.newInputStream())
 
-        config.addAll(props.getProperty(CONFIG_RESOURCES_KEY).split(' ').collect({APP_DIR + it}))
-        logger.info("JVM Arguments for running the app: $config")
-        this.args = config
+        args.addAll(props.getProperty(CONFIG_RESOURCES_KEY).split(',').collect({APP_DIR + it}))
+        logger.info("JVM Arguments for running the app: $args")
+        this.args = args
     }
 }
