@@ -54,6 +54,10 @@ class MuleDependencyPlugin implements Plugin<Project> {
         //before the project is evaluated, we need to configure the special DSL for the
         //dependencies.
         project.afterEvaluate({ Project proj ->
+
+            //add the default repositories to the build
+            configureRepositories(proj)
+
             logger.debug('Applying dependencies after project\'s evaluation.')
             DependenciesConfigurer configurer = new MuleProjectDependenciesConfigurer(project: proj, mule: proj.mule)
             configurer.applyDependencies()
@@ -81,5 +85,44 @@ class MuleDependencyPlugin implements Plugin<Project> {
         printMuleDependencies.description = "Print the list of configured mule dependencies."
         printMuleDependencies.group = MulePluginConstants.MULE_GROUP
 
+    }
+
+
+    void configureRepositories(Project proj) {
+        logger.debug("Adding repositories for the artifacts to the project...")
+        proj.repositories {
+
+            //local maven repository
+            mavenLocal()
+
+            //central maven repository
+            mavenCentral()
+
+            //the CE mule repository.
+            maven {
+                url 'http://repository.mulesoft.org/releases/'
+            }
+
+            //mule build dependencies.
+            maven {
+                url 'http://dist.codehaus.org/mule/dependencies/maven2/'
+            }
+
+            if (proj.mule.muleEnterprise) {
+
+                if (proj.mule.enterpriseRepoUsername.length() == 0) {
+                    logger.warn('muleEnterprise is enabled but no enterprise repository credentials are configured.')
+                    logger.warn('Please set the enterpriseRepoUsername and enterpriseRepoPassword variables.')
+                }
+
+                maven {
+                    credentials {
+                        username proj.mule.enterpriseRepoUsername
+                        password proj.mule.enterpriseRepoPassword
+                    }
+                    url 'https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/'
+                }
+            }
+        }
     }
 }

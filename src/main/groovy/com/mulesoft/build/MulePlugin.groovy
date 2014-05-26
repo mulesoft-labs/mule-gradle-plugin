@@ -101,50 +101,6 @@ class MulePlugin implements Plugin<Project> {
 
         }
 
-        project.afterEvaluate {
-            proj ->
-                project.repositories {
-
-                    //local maven repository
-                    mavenLocal()
-
-                    //central maven repository
-                    mavenCentral()
-
-                    //the CE mule repository.
-                    maven {
-                        url 'http://repository.mulesoft.org/releases/'
-                    }
-
-                    //mule build dependencies.
-                    maven {
-                        url 'http://dist.codehaus.org/mule/dependencies/maven2/'
-                    }
-
-                    if (proj.mule.muleEnterprise) {
-
-                        if (proj.mule.enterpriseRepoUsername.length() == 0) {
-                            logger.warn('muleEnterprise is enabled but no enterprise repository credentials are configured.')
-                            logger.warn('Please set the enterpriseRepoUsername and enterpriseRepoPassword variables.')
-                        }
-
-                        maven {
-                            credentials {
-                                username proj.mule.enterpriseRepoUsername
-                                password proj.mule.enterpriseRepoPassword
-                            }
-                            url 'https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/'
-                        }
-                    }
-
-                    //jboss repository, always useful.
-                    maven {
-                        url 'https://repository.jboss.org/nexus/content/repositories/'
-                    }
-                }
-
-        }
-
         Task ziptask = addZipDistributionTask(project)
 
         ArchivePublishArtifact zipArtifact = new ArchivePublishArtifact(ziptask as AbstractArchiveTask)
