@@ -39,22 +39,22 @@ class MuleDependencyPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
 
-        logger.debug("Applying MuleDependenyPlugin...")
+        logger.debug('Applying MuleDependenyPlugin...')
 
-        logger.debug("Getting mule plugin extension from project...")
+        logger.debug('Getting mule plugin extension from project...')
         //ensure mule plugin extension is present.
-        def mule = project.extensions.findByName("mule")
+        def mule = project.extensions.findByName('mule')
 
         //if this plugin is used on its own we would need to create the extension.
         if (!mule) {
-            logger.debug("Mule plugin extensions not found, creating one...")
-            project.extensions.create("mule", MulePluginExtension)
+            logger.debug('Mule plugin extensions not found, creating one...')
+            project.extensions.create('mule', MulePluginExtension)
         }
 
         //before the project is evaluated, we need to configure the special DSL for the
         //dependencies.
         project.afterEvaluate({ Project proj ->
-            logger.debug("Applying dependencies after project's evaluation.")
+            logger.debug('Applying dependencies after project\'s evaluation.')
             DependenciesConfigurer configurer = new MuleProjectDependenciesConfigurer(project: proj, mule: proj.mule)
             configurer.applyDependencies()
 
