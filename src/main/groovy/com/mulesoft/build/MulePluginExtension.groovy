@@ -22,6 +22,9 @@ package com.mulesoft.build
  */
 class MulePluginExtension {
 
+    private static String DEFAULT_MODULE_GROUP = 'org.mule.modules'
+    private static String DEFAULT_CONNECTOR_GROUP = 'org.mule.modules'
+
     /**
      * The mule version against we want to build.
      */
@@ -100,17 +103,57 @@ class MulePluginExtension {
     Set<String> eeTransports = []
 
     /**
-     * Maps containing the group: name: and version: of cloud connectors.
+     * Maps containing the group: name: and version: of cloud connectors, devkit modules and hand-generated compatible plugins.
      */
-    Set<Map<String, String>> connectors = []
+    Set<Map<String, String>> plugins = []
 
     /**
-     * Add connector coordinates to the connectors set.
-     * @param group the group name of the connector.
-     * @param name the name of the connector.
-     * @param version the version of the connector.
+     * Add plugin coordinates to the connectors set.
      */
-    public void useConnector(connectorData) {
-        connectors.add([group: connectorData.group, name: connectorData.name, version: connectorData.version])
+    public void plugin(def pluginData) {
+
+        if (!pluginData.group) {
+            throw new IllegalArgumentException('Plugin \'group\' attribute is mandatory')
+        }
+
+        if (!pluginData.name) {
+            throw new IllegalArgumentException('Plugin \'name\' attribute is mandatory')
+        }
+
+        if (!pluginData.version) {
+            throw new IllegalArgumentException('Plugin \'version\' attribute is mandatory')
+        }
+
+        Map<String, String> plugin = [group: pluginData.group,
+                                      name: pluginData.name,
+                                      version: pluginData.version,
+                                      noClassifier: pluginData.noClassifier,
+                                      noExt: pluginData.noExt
+                                    ]
+        plugins.add(plugin)
+    }
+
+    /**
+     * Delegates to the plugin call. This is mostly reserved for future use, but takes advantage that most modules
+     * are in the same group.
+     * @param moduleData
+     */
+    public void module(moduleData) {
+        if (!moduleData.group) {
+            moduleData.group = DEFAULT_MODULE_GROUP
+        }
+        plugin(moduleData)
+    }
+
+    /**
+     * Delegates to the plugin call. This is mostly reserved for future use, but takes advantage that most connectors
+     * are in the same group.
+     * @param moduleData
+     */
+    public void connector(connectorData) {
+        if (!connectorData.group) {
+            connectorData.group = DEFAULT_CONNECTOR_GROUP
+        }
+        plugin(connectorData)
     }
 }

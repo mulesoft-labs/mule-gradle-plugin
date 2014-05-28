@@ -138,8 +138,8 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                 compile(deps)
 
             }
-            if (!mule.connectors.empty) {
-                compile(doCollectConnectors(mule.connectors))
+            if (!mule.plugins.empty) {
+                compile(doCollectConnectors(mule.plugins))
             }
 
             if (mule.disableJunit) {
@@ -204,8 +204,17 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
         return connectors.collect({Map connector ->
 
             if (isDeployableArchiveBuild) {
-                connector.classifier = 'plugin'
-                connector.ext = 'zip'
+
+                if (!connector.noClassifier) {
+                    connector.classifier = 'plugin'
+                }
+
+                if (!connector.noExt) {
+                    connector.ext = 'zip'
+                }
+
+                connector.remove('noClassifier')
+                connector.remove('noExt')
             }
 
             if (logger.debugEnabled) {
