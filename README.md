@@ -139,11 +139,48 @@ mule.components {
 
     //exclude jdbc transport, deprecated in 3.5.0
     transports -= 'jdbc'
-   
+
     //include DB module.
     modules += 'db'
 }
 ```
+Mule provides many pluggable components, mainly in the form of external modules and cloud connectors. These modules can
+ be built either with mule's devkit or created manually. The mule plugin extension adds DSL to easily add these elements
+ to the build through 3 main DSL calls:
+ 
+- The method `plugin(group: , name:, version:, noClassifier:, noExt:)` is the main call of specifying these external 
+ plugins.
+- The method `connector(name:, version:, noClassifier:, noExt:)` is a shortcut that includes the de-facto group for most
+ cloud connectors.
+- The method `module(name:, version:, noClassifier:, noExt:)` is a shortcut that includes the de-facto group for most
+ devkit (and non-devkit) modules.
+ 
+The arguments for the three methods except `noClassifier` and `noExt` are equal in meaning to the ones used when 
+ specifying dependencies, the remaining are used for:
+ 
+- `noClassifier`: This is a `boolean` value indicating that we don't want to use the 'plugin' classifier when including
+ the dependency.
+- `noExt`: This is a `boolean` value indicating that we we don't want to use a 'zip' plugin in our distribution but to
+use the default 'jar' with dependencies approach. This maximizes the compatibility with IDE's including Mule Studio 
+or IntelliJ with the downside of adding unwanted jars into our build.
+
+Now let's see an example of how this DSL would look like:
+
+```groovy
+mule.components {
+    
+    //add a cloud connector
+    connector name: 'mule-module-cors', version: '1.1'
+
+    //add an external module
+    module name: 'mule-module-apikit-plugin', version: '1.3', noClassifier: true
+}
+```
+
+NOTE: When adding dependencies through this method, the final place where these will be on the archive depends on whether
+ the component is packaged as a jar library or an app plugin, in the first case, the jar and its dependencies will end
+ up in the archive's `lib/` directory and in the second case, the zip will end in the archive's `plugins/` directory.  
+
 Special Features
 ----
 
