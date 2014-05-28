@@ -30,10 +30,25 @@ class MuleZip extends Jar {
     private FileCollection classpath
 
     MuleZip() {
+        //the extension of the archive
         extension = "zip"
+
+        //the destination directory
+        setDestinationDir(project.buildDir)
+
+        //configure where to copy resources
+        MulePluginConvention convention = project.convention.getByName('muleConvention')
+
+        Set<String> resourcesToRootDir = convention.appResourcesDirectory()
+
+        resourcesToRootDir.each({String s ->
+            from { s }
+            into('')
+        })
 
         def baseDir = rootSpec.addChildBeforeSpec(mainSpec).into('')
 
+        //java sources
         baseDir.into('classes') {
             from {
                 def classpath = getClasspath()
@@ -41,14 +56,22 @@ class MuleZip extends Jar {
             }
         }
 
+        //dependencies
         baseDir.into('lib') {
             from {
                 def classpath = getClasspath()
-                classpath ? classpath.filter {File file -> file.isFile()} : []
+                classpath ? classpath.filter {File file -> file.isFile() && !file.name.endsWith('.zip')} : []
             }
         }
 
-        setDestinationDir(new File("build/"))
+        //devkit plugins
+        baseDir.into('plugins') {
+            from {
+                def classpath = getClasspath()
+                classpath ? classpath.filter {File file -> file.isFile() && file.name.endsWith('.zip')} : []
+            }
+        }
+
 
     }
 

@@ -44,6 +44,9 @@ class MulePlugin implements Plugin<Project> {
         //add the mule extension.
         project.extensions.create('mule', MulePluginExtension)
 
+        //add the mule plugin convention.
+        project.convention.create('muleConvention', MulePluginConvention)
+
         //apply plugins that also read the config
 
         //add the mule-esb dependencies
@@ -122,21 +125,6 @@ class MulePlugin implements Plugin<Project> {
         Task ziptask = project.tasks.create('mulezip', MuleZip.class)
 
         ziptask.dependsOn project.check
-
-        //add the app directory to the root of the zip file.
-        ziptask.from {
-            return 'src/main/app'
-        }
-
-        //add the data-mapper mappings
-        ziptask.from {
-            return 'mappings'
-        }
-
-        //add the APIKit specific files.
-        ziptask.from {
-            return 'src/main/api'
-        }
 
         ziptask.classpath {
 
