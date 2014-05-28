@@ -1,0 +1,17 @@
+#%RAML 0.8
+baseUri: http://127.0.0.1:8081/myapi
+title: My Sample API
+/convert:
+  get:
+    description: 'Convert Query parameters to JSON'
+    queryParameters:
+      a:
+        description: 'some parameter'
+      b:
+        description: 'some other parameter'
+    responses:
+      200:
+        description: 'Successful API CALL'
+        body:
+          application/json:
+            example: "{'a':'aValue', 'b':'bValue'}"

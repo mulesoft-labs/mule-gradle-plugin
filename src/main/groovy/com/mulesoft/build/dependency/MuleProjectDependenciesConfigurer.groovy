@@ -15,6 +15,7 @@
  */
 package com.mulesoft.build.dependency
 
+import com.mulesoft.build.MulePlugin
 import com.mulesoft.build.MulePluginExtension
 import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
@@ -137,6 +138,9 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                 compile(deps)
 
             }
+            if (!mule.plugins.empty) {
+                compile(doCollectConnectors(mule.plugins))
+            }
 
             if (mule.disableJunit) {
                 return
@@ -167,7 +171,6 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
         logger.debug('Collecting dependencies for transports')
         ret.addAll(doCollectDependencies(mule.transports, COMMUNITY_TRANSPORTS_GROUPID, MULE_TRANSPORTS_PREFIX))
 
-
         if (!mule.muleEnterprise) {
             return ret;
         }
@@ -188,6 +191,38 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
         return collection.collect({String value ->
             [group: group, name: prefix + value, version: mule.version]
         }) as List
+    }
+
+    List<Map> doCollectConnectors(Set<Map> connectors) {
+
+        boolean isDeployableArchiveBuild = project.plugins.hasPlugin(MulePlugin)
+
+        if (logger.debugEnabled) {
+            logger.debug("Connectors to be added: $connectors")
+        }
+
+        return connectors.collect({Map connector ->
+
+            if (isDeployableArchiveBuild) {
+
+                if (!connector.noClassifier) {
+                    connector.classifier = 'plugin'
+                }
+
+                if (!connector.noExt) {
+                    connector.ext = 'zip'
+                }
+
+                connector.remove('noClassifier')
+                connector.remove('noExt')
+            }
+
+            if (logger.debugEnabled) {
+                logger.debug("Adding connector: $connector")
+            }
+
+            return connector;
+        })
     }
 
 }
