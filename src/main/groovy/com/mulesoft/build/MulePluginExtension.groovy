@@ -98,4 +98,19 @@ class MulePluginExtension {
      * Paid enterprise modules to be included. If left empty, defaults will be added, only included if muleEnterprise = true
      */
     Set<String> eeTransports = []
+
+    /**
+     * Maps containing the group: name: and version: of cloud connectors.
+     */
+    Set<Map<String, String>> connectors = []
+
+    /**
+     * Add connector coordinates to the connectors set.
+     * @param group the group name of the connector.
+     * @param name the name of the connector.
+     * @param version the version of the connector.
+     */
+    public void useConnector(connectorData) {
+        connectors.add([group: connectorData.group, name: connectorData.name, version: connectorData.version])
+    }
 }
