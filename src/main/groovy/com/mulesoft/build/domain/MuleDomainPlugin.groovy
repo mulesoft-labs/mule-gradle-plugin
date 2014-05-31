@@ -40,6 +40,9 @@ class MuleDomainPlugin implements Plugin<Project> {
         //the base plugin will allow us to define target artifacts.
         project.apply plugin: BasePlugin
 
+        //create the mule plugin extension before the dependencies plguin does.
+        MuleDomainPluginExtension mule = project.extensions.create('mule', MuleDomainPluginExtension, project.name)
+
         project.apply plugin: 'mule-dependencies'
 
         //add the mule plugin convention.
@@ -96,5 +99,9 @@ class MuleDomainPlugin implements Plugin<Project> {
         project.artifacts {
             archives project.domainZip
         }
+
+        //add additional tasks to the plugin.
+        project.tasks.create('checkDomain', CheckDomainTask)
+
     }
 }
