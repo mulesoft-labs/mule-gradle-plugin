@@ -24,16 +24,15 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * Task in charge of verifying if subprojects have the right configuration to be deployed as part of this domain.
+ * Fix the domain modules by configuring the proper domain name in their mule-deploy.properties file.
  *
- * Created by juancavallotti on 30/05/14.
+ * Created by juancavallotti on 31/05/14.
  */
-class CheckDomainTask extends DefaultTask {
-
+class FixDomainTask extends DefaultTask {
     private static final Logger logger = LoggerFactory.getLogger(CheckDomainTask)
 
-    CheckDomainTask() {
-        description = "Verify that all modules in the project are correctly configured for the Domain."
+    FixDomainTask() {
+        description = "Update all modules in the project so they are correctly configured for the Domain."
         group = MulePluginConstants.MULE_GROUP
     }
 
@@ -48,12 +47,12 @@ class CheckDomainTask extends DefaultTask {
 
             //where the app resides?
             File deployProps = subproj.file("${convention.appSourceDir}").listFiles().find({File file ->
-                 file.name.equals('mule-deploy.properties')
+                file.name.equals('mule-deploy.properties')
             })
 
             if (!deployProps || !deployProps.exists()) {
                 logger.warn("Cannot verify module ${subproj.name}, file mule-deploy.properties not present.")
-                throw new IllegalStateException("mule-deploy.properties not found in module: ${subproj.name}")
+                throw new IllegalStateException("Module ${subproj.name} does not have a mule-deploy.properties file!")
             }
 
             Properties props = new Properties()
@@ -61,17 +60,15 @@ class CheckDomainTask extends DefaultTask {
 
             String domain = props['domain']
 
-            if (!domain) {
-                logger.warn("Property domain not present in deployment descriptor of module ${subproj.name}")
-                throw new IllegalStateException("Module ${subproj.name} does not have the domain property in the deployment descriptor.")
+            if (domainName.equals(domain)) {
+                logger.info("Module ${subproj.name} is correctly configured")
+                return
             }
 
-            if (!domain.equals(domainName)) {
-                logger.warn("Module ${subproj.name} is not properly configured, expecting $domainName but domain is: $domain")
-                throw new IllegalStateException("Module ${subproj.name} is configured with $domainName but current domain name is: $domain.")
-            }
+            logger.warn("Updating module ${subproj.name}...")
+            props['domain'] = domainName
 
-            logger.info("Module ${subproj.name} is correctly configured for domain $domainName.")
+            props.store(deployProps.newOutputStream(), 'Updated by gradle mule plugin.')
         }
     }
 

@@ -102,6 +102,9 @@ class MuleDomainPlugin implements Plugin<Project> {
 
         //add additional tasks to the plugin.
         project.tasks.create('checkDomain', CheckDomainTask)
+        project.tasks.create('fixDomain', FixDomainTask)
 
+        //we don't want to zip something that we cannot deploy correctly
+        project.domainZip.dependsOn project.checkDomain
     }
 }
