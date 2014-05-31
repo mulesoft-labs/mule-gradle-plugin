@@ -58,7 +58,6 @@ class InstallInRuntime extends Copy {
             //configured runtime
             from project.buildDir
 
-            //I want the zip files in the build dir, TODO - copy just the appropriate output file
             include "${archiveName}.zip"
 
             destinationDir = destination
