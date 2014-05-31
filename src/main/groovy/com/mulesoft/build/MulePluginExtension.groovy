@@ -107,6 +107,11 @@ class MulePluginExtension {
      */
     Set<Map<String, String>> plugins = []
 
+    void components(Closure<Void> closure) {
+        this.components = closure
+    }
+
+
     /**
      * Add plugin coordinates to the connectors set.
      */

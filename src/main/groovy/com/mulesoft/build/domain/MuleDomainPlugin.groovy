@@ -79,8 +79,10 @@ class MuleDomainPlugin implements Plugin<Project> {
         //mule studio could be applied by the user later, but we might consider making it default.
         project.subprojects {
 
+            def spmule = new MuleDomainModulePluginExtension(parent: project.mule)
+
             //configure the plugin extension on the mule project.
-            extensions.add('mule', project.mule)
+            extensions.add('mule', spmule)
 
             //apply the mule plugin to the subproject
             apply plugin: 'mule'

@@ -42,8 +42,9 @@ class MulePlugin implements Plugin<Project> {
         project.apply(plugin: 'java')
 
         //add the mule extension, only if not present
-        if (project.extensions.findByType(MulePluginExtension) == null)
+        if (project.extensions.findByType(MulePluginExtension) == null) {
             project.extensions.create('mule', MulePluginExtension)
+        }
 
         //add the mule plugin convention.
         project.convention.create('muleConvention', MulePluginConvention)
