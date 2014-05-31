@@ -17,6 +17,7 @@ package com.mulesoft.build
 
 import com.mulesoft.build.domain.MuleDomainPlugin
 import com.mulesoft.build.studio.StudioPlugin
+import com.mulesoft.build.util.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.JavaPluginConvention
@@ -63,27 +64,30 @@ class InitProjectTask extends DefaultTask {
 
     void copyInitialFiles() {
 
-        //log4j
+
+
         InputStream contents = null
         String filename = null
 
+        //log4j
         filename = 'src/main/resources/log4j.properties'
         contents = getClass().getResourceAsStream('/starters/starters-log4j.properties')
 
         writeFile(filename, contents)
 
+        //app env properties
         filename = 'src/main/app/mule-app.properties'
         contents = getClass().getResourceAsStream('/starters/starters-mule-app.properties')
 
         writeFile(filename, contents)
 
+        //deployment descriptor
         filename = 'src/main/app/mule-deploy.properties'
         contents = getClass().getResourceAsStream('/starters/starters-mule-deploy.properties')
 
         saveDeployProperties(filename, contents)
 
-        //writeFile(filename, contents)
-
+        //mule app configuration
         filename = 'src/main/app/mule-config.xml'
         contents = getClass().getResourceAsStream('/starters/starters-mule-config.xml')
 
@@ -91,30 +95,8 @@ class InitProjectTask extends DefaultTask {
 
     }
 
-    void writeFile(String fileName, InputStream contents) {
-
-        logger.debug("Trying to create: $fileName")
-
-        if (!contents) {
-            throw new TaskExecutionException(this, new IllegalArgumentException("Invalid contents $fileName"))
-        }
-
-        File f = new File(fileName)
-
-        if (f.exists()) {
-            logger.warn("Will not create $fileName, file already exists")
-            return
-        }
-
-        boolean created = f.createNewFile()
-        if (!created) {
-            throw new TaskExecutionException(this, new IOException("Could not create $fileName"))
-        }
-
-        logger.debug('Writing file contents...')
-
-        f.append(contents)
-        logger.debug('Done!')
+    void writeFile(String filename, InputStream contents) {
+        FileUtils.writeFile(project, filename, contents)
     }
 
     void printInstructions() {
@@ -167,6 +149,6 @@ class InitProjectTask extends DefaultTask {
 
         deployProps['domain'] = domainName
 
-        deployProps.store(new File(filename).newOutputStream(), 'Created by mule gradle plugin')
+        deployProps.store(project.file(filename).newOutputStream(), 'Created by mule gradle plugin')
     }
 }

@@ -15,9 +15,11 @@
  */
 package com.mulesoft.build.domain
 
+import com.mulesoft.build.MulePluginConstants
 import com.mulesoft.build.MulePluginConvention
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.BasePlugin
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -112,5 +114,48 @@ class MuleDomainPlugin implements Plugin<Project> {
 
         //we don't want to zip something that we cannot deploy correctly
         project.domainZip.dependsOn project.checkDomain
+
+        //configure the lifecycle of domain init
+        applyDomainInitTasks(project)
+    }
+
+    /**
+     * Init domain task, creates and initializes any submodules the domain has.
+     * @param project the domain project.
+     */
+    void applyDomainInitTasks(Project project) {
+
+        //create the task init domain
+        Task initDomainTask = project.tasks.create('initDomain')
+
+        Task initDomainFilesTask = project.tasks.create('initDomainFiles', InitDomainFilesTask)
+
+        initDomainTask.dependsOn initDomainFilesTask
+
+        project.subprojects.each {Project subp ->
+
+            File subpFolder = project.file(subp.name)
+
+            if (subpFolder.exists()) {
+                logger.debug("Module with name ${subp.name} already exists, skipping...")
+                return
+            }
+
+            initDomainTask.dependsOn subp.initMuleProject
+
+            Task createSubpTask = subp.task('createModule') << {
+                if (subpFolder.mkdir()) {
+                    logger.debug("Created folder for module: ${subp.name}")
+                } else {
+                    logger.warn("Could not create folder for module: ${subp.name}")
+                }
+            }
+
+            subp.initMuleProject.dependsOn createSubpTask
+        }
+
+        initDomainTask.description = 'Initialize the domain structure and subprojects as well as populate it with initial config files'
+        initDomainTask.group = MulePluginConstants.MULE_GROUP
+
     }
 }
