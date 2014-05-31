@@ -15,6 +15,7 @@
  */
 package com.mulesoft.build
 
+import com.mulesoft.build.domain.MuleDomainPlugin
 import com.mulesoft.build.studio.StudioPlugin
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.SourceDirectorySet
@@ -79,7 +80,9 @@ class InitProjectTask extends DefaultTask {
         filename = 'src/main/app/mule-deploy.properties'
         contents = getClass().getResourceAsStream('/starters/starters-mule-deploy.properties')
 
-        writeFile(filename, contents)
+        saveDeployProperties(filename, contents)
+
+        //writeFile(filename, contents)
 
         filename = 'src/main/app/mule-config.xml'
         contents = getClass().getResourceAsStream('/starters/starters-mule-config.xml')
@@ -136,5 +139,34 @@ class InitProjectTask extends DefaultTask {
         100.times {print '-'}
         print '\n'
 
+    }
+
+
+    void saveDeployProperties(String filename, InputStream contents) {
+
+        if (contents == null) {
+            throw new IllegalArgumentException("Cannot write $filename, contents not found.")
+        }
+
+        logger.debug('Applying proper domain, if needed.')
+
+        //check if I have parent and if my parent is a domain
+        if (!project.parent?.plugins.hasPlugin(MuleDomainPlugin)) {
+            logger.debug('The project is not part of any domain, leaving as it is')
+            writeFile(filename, contents)
+        }
+
+        def parentMule = project.parent.mule
+
+        //find the domain name.
+        String domainName = parentMule.resolveDomainName()
+
+        Properties deployProps = new Properties()
+
+        deployProps.load(contents)
+
+        deployProps['domain'] = domainName
+
+        deployProps.store(new File(filename).newOutputStream(), 'Created by mule gradle plugin')
     }
 }
