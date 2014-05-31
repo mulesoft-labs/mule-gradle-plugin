@@ -45,6 +45,10 @@ class MuleDomainPlugin implements Plugin<Project> {
 
         project.apply plugin: 'mule-dependencies'
 
+        //this project can be deployed in a container.
+        project.apply plugin: 'mule-deploy'
+
+
         //add the mule plugin convention.
         project.convention.create('muleConvention', MulePluginConvention)
 

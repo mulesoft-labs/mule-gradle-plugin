@@ -40,6 +40,7 @@ class MuleDeployPlugin implements Plugin<Project> {
 
             //depends on the generic build
             task.dependsOn 'build'
+            task.description = InstallInRuntime.TASK_DESC;
             task.group = MulePluginConstants.MULE_GROUP
         }
     }
