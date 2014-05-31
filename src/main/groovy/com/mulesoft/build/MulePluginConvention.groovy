@@ -36,6 +36,11 @@ class MulePluginConvention {
     String apiKitApiDir = 'src/main/api'
 
     /**
+     * Where to read MuleDomain sources.
+     */
+    String domainSourceDir = 'src/main/domain'
+
+    /**
      * Extension point for additional paths to be configured.
      */
     Set<String> additionalPaths = []
