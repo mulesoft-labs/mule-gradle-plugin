@@ -51,9 +51,12 @@ class DomainZip extends Zip {
 
         //add the logic for copying the apps.
         into('apps') {
-            from project.buildDir
-            exclude "${project.name}.zip"
-            include '**.zip'
+            Set<File> files = []
+            project.subprojects.each { subproj ->
+                files.addAll(subproj.configurations.archives.allArtifacts.files.files)
+            }
+
+            from files
         }
 
         //compile-time deps will go to the domain's lib directory
