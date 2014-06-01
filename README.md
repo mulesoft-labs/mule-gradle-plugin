@@ -11,6 +11,11 @@
   - [Fine-grained Control over Mule Components](#fine-grained-control-over-mule-components)
   - [Special Features](#special-features)
   - [Mule Embedded in Java Apps](#mule-embedded-in-java-apps)
+  - [Mule Domain Apps](#mule-domain-apps)
+    - [Definition Mechanics](#definition-mechanics)
+    - [Restrictions in the configuration](#restrictions-in-the-configuration)
+    - [Shared Libraries in Domains](#shared-libraries-in-domains)
+    - [Domain Goodies](#domain-goodies)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -218,3 +223,103 @@ apply plugin: 'java'
 apply plugin: 'mule-dependencies' 
 
 ```
+
+Mule Domain Apps
+----
+
+Starting from Mule ESB 3.5.0, both community and enterprise received the 
+['Shared resources'](http://www.mulesoft.org/documentation/display/current/Shared+Resources) feature, this entails a new
+  way of packaging apps and a new file where shared resources are declared.
+
+This process is analogous to a multi-module project with a root descriptor and therefore the approach taken by this plugin
+is to take advantage of [Gradle's multi-project builds](http://www.gradle.org/docs/current/userguide/multi_project_builds.html).
+
+So the typical project structure will be the following:
+
+  * Project Root
+    * /src/main/domain/mule-domain-config.xml: Here is where the shared resources are configured. 
+    * /build.gradle: This will have a slightly different structure than regular projects.
+    * /settings.gradle: This is where all the modules are declared.
+    * /module 1
+    * /module 2
+    * ...
+    * /module N: Modules have the same structure as regular projects.
+    
+### Definition Mechanics
+
+In order to start a domain project, you can start with a `build.gradle` similar to the following:
+
+```groovy
+buildscript {
+	dependencies {
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0-SNAPSHOT'
+	}
+
+	repositories {
+		mavenLocal()
+	}
+}
+
+apply plugin: 'mule-domain'
+
+mule.version = '3.5.0'
+
+mule.muleEnterprise = false
+```
+
+And the following `settings.gradle` to define the modules, in this example we have defined the `api` and `backend` modules
+but you can define as many as you need.
+ 
+```groovy
+include 'api', 'backend'
+```
+
+Finally, we can run the `initDomain` task, this will perform several actions for us:
+ 
+  * Create a directory for each module.
+  * Run `initMuleProject` task on each created directory.
+  * Create an initial `mule-domain-config.xml` with a shared example HTTP Connector.
+
+Once this process is done, the domain is ready to be packaged and deployed.  
+
+### Restrictions in the configuration
+  
+While we try to keep configuration of the different modules as flexible as possible, there are some restrictions that
+  come from the same nature of a domain:
+  
+  * The config parameter `mule.version` is shared and configured at the *domain project level*. The reason behind this 
+  restriction is that the domain with its modules will run necessarily all in the same Mule instance.
+  * The config parameter `mule.muleEnterprise` is also shared since there is no way a Mule container can be both CE and 
+  EE at the same time.
+  * The config parameters `mule.enterpriseRepoUsername` and `mule.enterpriseRepoPassword` are shared, this is just 
+  for usability.
+  
+  
+### Shared Libraries in Domains
+
+Mule Domains allow us to share libraries between modules, in order to configure shared libraries, simply add dependencies
+in the `compile` scope.
+
+NOTE: A domain project is more limited than a normal mule project, no classes or unit tests are allowed, so for this reason
+only two dependency scopes are defined:
+
+  * `compile`: Use this to include shared jars
+  * `providedCompile`: Use this to include any jar present in the runtime but needed in your IDE.
+  
+All mule dependencies present in a non-domain project are also present in the `providedCompile` scope, this is like this
+so IDE's can find the XSDs shipped in the Jars that are used when editing the domain config file.
+
+The following example shows how to add a library:
+
+```groovy
+//dependencies that are shared between the modules, installed in the domain's lib dir.
+dependencies {
+    compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.9.1'
+}
+```
+
+### Domain Goodies
+
+  * `install` task is now 'Domain-aware' and can be used to deploy a domain with its submodules directly.
+  * The domain plugin has the ability to check if all modules are correctly configured, just run the `checkDomain` task.
+  * If some module is not correctly configured for the domain, the `fixDomain` task allows you to fix the module settings.
