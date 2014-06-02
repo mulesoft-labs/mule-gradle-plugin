@@ -38,6 +38,13 @@ class MuleDeployPlugin implements Plugin<Project> {
             //define the task
             Task task = proj.tasks.create('install', InstallInRuntime)
 
+            Task findRuntime = proj.tasks.create('configureInstall') << {
+                //do this as soon as we have the effective config.
+                task.doInstallInRuntime()
+            }
+
+            //we need to configure the task before.
+            task.dependsOn findRuntime
             //depends on the generic build
             task.dependsOn 'build'
             task.description = InstallInRuntime.TASK_DESC;

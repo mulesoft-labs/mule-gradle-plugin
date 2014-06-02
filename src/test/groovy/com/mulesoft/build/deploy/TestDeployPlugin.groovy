@@ -17,6 +17,7 @@ package com.mulesoft.build.deploy
 
 import com.mulesoft.build.MulePluginConvention
 import com.mulesoft.build.MulePluginExtension
+import junit.framework.Assert
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskInstantiationException
 import org.gradle.testfixtures.ProjectBuilder
@@ -45,9 +46,16 @@ class TestDeployPlugin {
         try {
 
             InstallInRuntime task = proj.tasks.create('install', InstallInRuntime)
+            task.doInstallInRuntime()
 
-        } catch (TaskInstantiationException ex) {
-            assertTrue('Should be caused by IllegalArgumentException', ex.cause instanceof IllegalArgumentException)
+            //this MUST have thrown an exception
+            fail('Must have thrown exception but didnt')
+
+        } catch (IllegalArgumentException ex) {
+            //this is what is expected.
+            assertTrue('Test passed', true)
+        } catch (Exception ex) {
+            fail("Wrong type of exception ${ex.getClass()}")
         }
     }
 

@@ -23,10 +23,6 @@ class InstallInRuntime extends Copy {
     InstallInRuntime() {
         //this task should always run
         outputs.upToDateWhen {false}
-
-        //do this as soon as we have the effective config.
-        doInstallInRuntime()
-
     }
 
 
@@ -50,7 +46,9 @@ class InstallInRuntime extends Copy {
             File runtimeInstallPath = new File(folderName)
 
             if (!runtimeInstallPath.exists()) {
-                throw new IllegalArgumentException("Runtime not found in location: $runtimeInstallPath")
+                String message = "Runtime not found in location: $runtimeInstallPath"
+                logger.error(message)
+                throw new IllegalArgumentException(message)
             }
 
             File destination = runtimeInstallPath.listFiles().find { File child ->
@@ -58,7 +56,9 @@ class InstallInRuntime extends Copy {
             }
 
             if (!destination.exists()) {
-                throw new IllegalArgumentException("Selected runtime location ($runtimeInstallPath) does not have the $targetLocation deployment directory.")
+                String message = "Selected runtime location ($runtimeInstallPath) does not have the $targetLocation deployment directory."
+                logger.error(message)
+                throw new IllegalArgumentException(message)
             }
 
             //should copy the files in the build directory to the
