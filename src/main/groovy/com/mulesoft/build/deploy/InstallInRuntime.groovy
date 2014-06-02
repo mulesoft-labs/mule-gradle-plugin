@@ -46,12 +46,19 @@ class InstallInRuntime extends Copy {
         def folderName = resolveTargetLocation(mule)
 
         if (folderName) {
-            File destination = new File(folderName).listFiles().find { File child ->
+
+            File runtimeInstallPath = new File(folderName)
+
+            if (!runtimeInstallPath.exists()) {
+                throw new IllegalArgumentException("Runtime not found in location: $runtimeInstallPath")
+            }
+
+            File destination = runtimeInstallPath.listFiles().find { File child ->
                 child.isDirectory() && child.name.equals(targetLocation)
             }
 
             if (!destination.exists()) {
-                throw new IllegalStateException("Selected runtime does not have the $targetLocation deployment directory.")
+                throw new IllegalArgumentException("Selected runtime location ($runtimeInstallPath) does not have the $targetLocation deployment directory.")
             }
 
             //should copy the files in the build directory to the
