@@ -133,9 +133,10 @@ class InitProjectTask extends DefaultTask {
         logger.debug('Applying proper domain, if needed.')
 
         //check if I have parent and if my parent is a domain
-        if (!project.parent?.plugins.hasPlugin(MuleDomainPlugin)) {
+        if (!project.parent || !project.parent.plugins.hasPlugin(MuleDomainPlugin)) {
             logger.debug('The project is not part of any domain, leaving as it is')
             writeFile(filename, contents)
+            return
         }
 
         def parentMule = project.parent.mule

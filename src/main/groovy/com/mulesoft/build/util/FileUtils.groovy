@@ -38,7 +38,7 @@ class FileUtils {
         logger.debug("Trying to create: $fileName")
 
         if (!contents) {
-            throw new TaskExecutionException(this, new IllegalArgumentException("Invalid contents $fileName"))
+            throw new IllegalArgumentException("Invalid contents $fileName")
         }
 
         File f = project.file(fileName)
@@ -50,7 +50,7 @@ class FileUtils {
 
         boolean created = f.createNewFile()
         if (!created) {
-            throw new TaskExecutionException(this, new IOException("Could not create $fileName"))
+            throw new IOException("Could not create $fileName")
         }
 
         logger.debug('Writing file contents...')
