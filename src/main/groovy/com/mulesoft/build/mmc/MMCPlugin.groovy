@@ -40,9 +40,9 @@ class MMCPlugin implements Plugin<Project> {
 
 
         //register the plugin
-        Task t =  project.tasks.create('deploy', DeployToMMCTask)
+        Task t =  project.tasks.create('uploadToRepository', DeployToMMCTask)
 
-        t.description = 'Deploy the resulting application to the Mule Management Console'
+        t.description = 'Upload the resulting application to the app repository of the Mule Management Console'
         t.group = MulePluginConstants.MULE_GROUP
 
         t.dependsOn project.build
