@@ -10,6 +10,8 @@ buildscript {
 
 apply plugin: 'mulestudio'
 
+apply plugin: 'mmc'
+
 mule.version = '3.5.0'
 
 mule.muleEnterprise = false
@@ -30,3 +32,8 @@ mule.components {
 }
 
 mule.installPath = '/Users/juancavallotti/mule/mule350'
+
+//configure MMC
+mmc.environments {
+    dev appName:'myApp', version:'1.0.2'
+}
