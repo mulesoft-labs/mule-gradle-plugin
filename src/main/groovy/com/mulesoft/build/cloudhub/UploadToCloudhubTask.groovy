@@ -43,22 +43,38 @@ class UploadToCloudhubTask extends DefaultTask {
         CloudhubEnvironment env = ext.resolveTargetDomain()
 
         if (env == null && ext.domains.isEmpty()) {
+            logger.error('No environment has been configured, aborting...')
             throw new IllegalStateException('Could not find a configured cloudhub environment.')
         }
 
         if (env == null) {
+            logger.error('Multiple environments found but none defined as default...')
             throw new IllegalStateException("Multiple cloudhub domains found but none selected as default: ${ext.domains.keySet()}")
+        }
+
+        //display the environment that will be used.
+        if (logger.isInfoEnabled()) {
+            logger.info("About to deploy to environment $env")
         }
 
         File uploadedFile = project.configurations.archives.allArtifacts.files.singleFile
 
+
         //try and upload the app to cloudhub
         String url = "$chApi/applications/$env.domainName/deploy"
+
+        if (logger.isInfoEnabled()){
+            logger.info("Will deploy file: $uploadedFile.absolutePath")
+            logger.info("Will upload to artifact to url: $url")
+        }
 
         //build an url connection.
         HttpURLConnection conn = url.toURL().openConnection()
 
         try {
+
+            println "\t Uploading file $uploadedFile.name to URL: $url"
+
             //set the headers
             String credentials = HttpUtils.buildBasicAuthHeader(env.username, env.password)
             String basicAuth = "Basic $credentials"
@@ -79,8 +95,18 @@ class UploadToCloudhubTask extends DefaultTask {
 
             //check the response
             if (conn.responseCode != 200) {
+
+                switch (conn.responseCode) {
+                    case 401:
+                        logger.warn("Invalid credentials were used to upload the artifact, please verify your username and password and retry.")
+                        break;
+                    default:
+                        logger.warn("Cloudhub responded with status code: $conn.responseCode")
+                }
                 throw new IllegalStateException('Deployment to cloudhub failed.')
             }
+
+            println "\t Done!"
 
         } finally {
             conn.disconnect()
