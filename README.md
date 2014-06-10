@@ -7,6 +7,8 @@
   - [Enabling your project to build through the Command Line](#enabling-your-project-to-build-through-the-command-line)
   - [Start a new Project](#start-a-new-project)
   - [Enterprise Features](#enterprise-features)
+    - [Uploading your apps to the Management Console](#uploading-your-apps-to-the-management-console)
+    - [Uploading your apps to Cloudhub](#uploading-your-apps-to-cloudhub)
   - [Working with MuleStudio](#working-with-mulestudio)
   - [Fine-grained Control over Mule Components](#fine-grained-control-over-mule-components)
   - [Special Features](#special-features)
@@ -105,6 +107,89 @@ Currently, externalization of these credentials is left to the user's preferred 
 
 This repo will not be enabled if `mule.muleEnterprise` is set to false.
 
+### Uploading your apps to the Management Console
+
+This set of plugins ship as well with one for the Mule Management Console. This plugin currently allows to upload to the 
+management console the resulting artifact and define several environments through a concise DSL.
+
+In order to use this, your project needs to apply the `mmc` plugin:
+
+```groovy
+apply plugin: 'mmc'
+```
+
+After that simply define your MMC environments, with their url, username and passwords.
+
+```groovy
+mmc.environments {
+    dev url: 'http://managmentConsole:8080/mmc', appName:'myApp', version:'1.0.2'
+}
+```
+
+The DSL allows 5 configuration parameters.
+ - The name of the method (in the previous example `dev` is the name of the environment, this is not restricted, you can
+  use whatever name you'd like as a description for your env.
+ - `url`: Is the url where the management console is deployed. This url needs to be without the  /api path.
+ - `username` and `password`:  The credentials to log in to the MMC API.
+ - `appName`: The name of the app in the repository, by default it will be the name of the project.
+ - `version`: The version of the app in the repository, by default it will be the project's version.
+
+A couple more examples to illustrate the DSL's usage:
+ 
+```groovy
+mmc.environments {
+    dev url: 'http://managmentConsole:8080/mmc', appName:'myApp', version:'1.0.2'
+    prod url: 'http://prodEnv:8080/mmc', username: 'admin', password: 'test'
+    'pre-prod' url: 'http://preprodEnv:8080/mmc', username: 'admin', password: 'test'
+    
+    defaultEnvironment = 'prod'
+}
+```
+
+NOTE: Use the mmc.defaultEnvironment property to control where the built app will be deployed.
+
+Finally, to upload the app to the target repository, run the `uploadToRepository` task.
+
+    $ gradle uploadToRepository
+
+
+### Uploading your apps to Cloudhub
+
+This set of plugins ship as well with one for Cloudhub. This plugin currently allows to deploy the resulting app to a 
+cloudhub domain and and define several environments through a concise DSL.
+
+In order to use this, your project needs to apply the `cloudhub` plugin:
+
+```groovy
+apply plugin: 'cloudhub'
+```
+
+After that simply define your Cloudhub environments, with their domain name, username and password.
+
+```groovy
+cloudhub.domains {
+    myapp  username: 'login-username', password: 'pass'
+}
+```
+
+In the dsl, the name of the method is the domain where to deploy your app. If your domain contains characters that are
+not valid for method names, you can simply use a string as method name, the following examples illustrate further the 
+configuration:
+
+```groovy
+cloudhub.domains {
+    myapp  username: 'login-username', password: 'pass'
+    'myapp-dev' username: 'dev-username', password: 'pass'
+    
+    defaultDomain = 'myapp-dev'
+}
+```
+In order to perform the deployment, simply call the `deploy` task:
+
+    $ gradle deploy
+ 
+The build will succeed if the app is correctly uploaded. 
+ 
 Working with MuleStudio
 ----
 
