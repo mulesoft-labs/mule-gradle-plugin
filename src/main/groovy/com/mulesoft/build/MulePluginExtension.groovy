@@ -49,6 +49,12 @@ class MulePluginExtension {
     boolean disableJunit = false
 
     /**
+     * When mule enterprise = true, by default, the plugin will add the necessary tasks to unit-test against data mapper.
+     * If this is not wanted, simply set this flag to false.
+     */
+    boolean disableDataMapper = false
+
+    /**
      * The version of JUnit used to run tests.
      */
     String junitVersion = '4.9'

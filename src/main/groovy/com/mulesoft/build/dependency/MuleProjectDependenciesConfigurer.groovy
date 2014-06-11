@@ -151,6 +151,25 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                     [group: 'junit', name: 'junit', 'version': mule.junitVersion]
             ];
 
+            if (mule.muleEnterprise && !mule.disableDataMapper){
+                logger.debug('Adding datamapper necessary test dependencies and tasks')
+
+                //hardcoding for now, we need to improve this in the future.
+                testDeps += [group: 'xalan', name: 'xalan', version: '2.7.1']
+                testDeps += [group: 'xerces', name: 'xml-serializer', version: '2.7.1']
+                testDeps += [group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version]
+
+                //if there is a provided test runtime, then add the clover plugins there
+                if (project.configurations.findByName('providedTestRuntime')) {
+                    providedTestRuntime(group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version, ext: 'zip')
+
+                    //add the unpack clover task to the project.
+                    def unpackClover = project.tasks.create('unpackClover', UnpackCloverTask)
+                    project.test.dependsOn unpackClover
+                }
+            }
+
+
             if (project.configurations.findByName('providedTestCompile')) {
                 providedTestCompile(testDeps)
             } else {
