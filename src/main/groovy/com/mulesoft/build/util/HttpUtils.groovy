@@ -22,9 +22,13 @@ import org.apache.commons.codec.binary.Base64
  */
 class HttpUtils {
 
-    static String buildBasicAuthHeader(String username, String password) {
-        String result = "$username:$password"
-        return Base64.encodeBase64String(result.getBytes())
+    static void configureNetworkAuthenticator(String username, String password) {
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password.toCharArray())
+            }
+        })
     }
 
 }

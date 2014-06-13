@@ -15,8 +15,8 @@
  */
 package com.mulesoft.build.cloudhub
 
+import com.mulesoft.build.util.FileUtils
 import com.mulesoft.build.util.HttpUtils
-import org.apache.commons.io.IOUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -68,6 +68,9 @@ class UploadToCloudhubTask extends DefaultTask {
             logger.info("Will upload to artifact to url: $url")
         }
 
+        //configure authentication
+        HttpUtils.configureNetworkAuthenticator(env.username, env.password)
+
         //build an url connection.
         HttpURLConnection conn = url.toURL().openConnection()
 
@@ -76,19 +79,16 @@ class UploadToCloudhubTask extends DefaultTask {
             println "\t Uploading file $uploadedFile.name to URL: $url"
 
             //set the headers
-            String credentials = HttpUtils.buildBasicAuthHeader(env.username, env.password)
-            String basicAuth = "Basic $credentials"
 
             conn.doOutput = true
             conn.useCaches = false
             conn.setRequestMethod('POST')
-            conn.setRequestProperty('Authorization', basicAuth)
             conn.setRequestProperty('Content-Type', 'application/octet-stream')
 
             //write the payload
             OutputStream os = conn.getOutputStream()
 
-            IOUtils.copy(uploadedFile.newInputStream(), os)
+            FileUtils.copyStream(uploadedFile.newInputStream(), os)
 
             os.flush()
             os.close()

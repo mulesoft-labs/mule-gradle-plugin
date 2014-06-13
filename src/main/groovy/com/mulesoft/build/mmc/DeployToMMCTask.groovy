@@ -15,9 +15,9 @@
  */
 package com.mulesoft.build.mmc
 
+import com.mulesoft.build.util.FileUtils
 import com.mulesoft.build.util.HttpUtils
 import com.mulesoft.build.util.MultipartOutputStream
-import org.apache.commons.io.IOUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -69,6 +69,10 @@ class DeployToMMCTask extends DefaultTask {
         String uploadUrl = "$env.url/api/repository"
 
         logger.debug('Creating http connection to MMC')
+
+        //configure network auth
+        HttpUtils.configureNetworkAuthenticator(env.username, env.password)
+
         //create an url connection
         HttpURLConnection conn = uploadUrl.toURL().openConnection()
 
@@ -76,15 +80,12 @@ class DeployToMMCTask extends DefaultTask {
 
             println "\tUploading app to environment $uploadUrl"
 
-            String basicCreds = HttpUtils.buildBasicAuthHeader(env.username, env.password)
-
             def mpbuilder = MultipartOutputStream.builder()
 
             logger.debug('Configuring http headers...')
             conn.useCaches = false
             conn.doOutput = true
             conn.setRequestMethod('POST')
-            conn.setRequestProperty('Authorization', "Basic $basicCreds")
             conn.setRequestProperty('Content-Type', "multipart/form-data; boundary=$mpbuilder.boundary")
 
             logger.debug('Sending multipart body...')
@@ -98,7 +99,7 @@ class DeployToMMCTask extends DefaultTask {
             //send the info
             os.startPart('application/octet-stream', ["Content-Disposition: form-data; name=\"file\"; filename=\"${uploadedFile.name}\""] as String[])
             //send the file part
-            IOUtils.copy(uploadedFile.newInputStream(), os)
+            FileUtils.copyStream(uploadedFile.newInputStream(), os)
 
             os.startPart(['Content-Disposition: form-data; name="name"'] as String[])
             os.write(env.appName.bytes)

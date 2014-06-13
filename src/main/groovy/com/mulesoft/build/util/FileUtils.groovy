@@ -58,4 +58,36 @@ class FileUtils {
         f.append(contents)
         logger.debug('Done!')
     }
+
+    private static final int BUFFER_SIZE = 4096
+
+    /**
+     * Copy all the information from an input stream into an output stream keeping the count on the amount of bytes
+     * copied.
+     * @param input
+     * @param output
+     * @return
+     */
+    static long copyStream(InputStream input, OutputStream output) {
+
+        if (input == null || output == null) {
+            throw new IllegalArgumentException('Arguments cannot be null')
+        }
+
+        byte[] buffer = new byte[BUFFER_SIZE]
+
+        long result = 0
+        int iterationCount = 0
+
+        //perform the copy.
+        while ((iterationCount = input.read(buffer)) != -1) {
+            output.write(buffer, 0, iterationCount)
+            result += iterationCount
+        }
+
+        //the end of the stream has been reached.
+
+        return result
+    }
+
 }
