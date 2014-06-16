@@ -348,8 +348,6 @@ buildscript {
 apply plugin: 'mule-domain'
 
 mule.version = '3.5.0'
-
-mule.muleEnterprise = false
 ```
 
 And the following `settings.gradle` to define the modules, in this example we have defined the `api` and `backend` modules
