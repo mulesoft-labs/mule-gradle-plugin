@@ -37,10 +37,10 @@ mule.installPath = '/Users/juancavallotti/mule/mule350'
 
 //configure cloudhub deployment
 cloudhub.domains {
-    jcsupport username: 'juancavallotti', password: 'lalaplop12'
+    jcsupport username: 'myusername', password: 'mypassword'
 }
 
 //configure MMC
 mmc.environments {
-    dev url: 'http://localhost:8080/mmc', username:'adm', password:'aaadmiiin', appName:'myApp', version:'1.0.2'
+    dev url: 'http://localhost:8080/mmc', username:'admin', password:'admin', appName:'myApp', version:'1.0.2'
 }
