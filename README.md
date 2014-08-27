@@ -31,13 +31,15 @@ This plugin allows the user to build mule applications with the gradle build sys
 Install the plugin locally
 ----
 
-The plugin needs to reside in some place that gradle is able to find. We will use the maven local repository as most of
+**Optional:** The plugin needs to reside in some place that gradle is able to find. We will use the maven local repository as most of
 the Mule artifacts are hosted in a maven repository.
 
 Build the plugin and install it to your local maven repository:
 
     $ gradle clean publishToMavenLocal
 
+**Note:** Since 1.0.0 the plugin has been published into MuleSoft's community maven repository, so you can simply 
+proceed to the next step.  
 
 Enabling your project to build through the Command Line
 ----
