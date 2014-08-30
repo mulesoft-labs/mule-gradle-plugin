@@ -55,7 +55,7 @@ buildscript {
 
 	repositories {
 		maven {
-		    url: 'http://repository.mulesoft.org/releases'
+		    url 'http://repository.mulesoft.org/releases'
 		}
 	}
 }
