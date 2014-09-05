@@ -45,7 +45,9 @@ class StudioProject {
         String runtimeVersion = generateRuntimeVersion()
 
         //set the appropriate runtime
-        project.@runtimeId="org.mule.tooling.server.$runtimeVersion"
+        //TODO - REMOVE WORKAROUND FOR GROOVY BUG
+        //https://issues.gradle.org/browse/GRADLE-2566
+        project.@runtimeId="org.mule.tooling.server.$runtimeVersion".toString()
 
         //set the correct name
         project.appendNode {

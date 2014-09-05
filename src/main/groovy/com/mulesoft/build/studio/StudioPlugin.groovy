@@ -65,10 +65,10 @@ class StudioPlugin implements Plugin<Project> {
             //remove provided configurations from the eclipse classpath
             //since they will be in the mule runtime anyway, and if not
             //the user should install it on the mule runtime to preserve semantics
-            minusConfigurations += project.configurations.providedCompile
-            minusConfigurations += project.configurations.providedRuntime
-            minusConfigurations += project.configurations.providedTestCompile
-            minusConfigurations += project.configurations.providedTestRuntime
+            minusConfigurations += [project.configurations.providedCompile]
+            minusConfigurations += [project.configurations.providedRuntime]
+            minusConfigurations += [project.configurations.providedTestCompile]
+            minusConfigurations += [project.configurations.providedTestRuntime]
 
             containers 'org.eclipse.jdt.launching.JRE_CONTAINER', 'MULE_RUNTIME'
 
