@@ -55,7 +55,7 @@ buildscript {
 
 	repositories {
 		maven {
-		    url: 'http://repository.mulesoft.org/releases'
+		    url 'http://repository.mulesoft.org/releases'
 		}
 	}
 }
@@ -342,11 +342,13 @@ In order to start a domain project, you can start with a `build.gradle` similar 
 ```groovy
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0-SNAPSHOT'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0'
 	}
 
 	repositories {
-		mavenLocal()
+		maven {
+		    url 'http://repository.mulesoft.org/releases'
+		}
 	}
 }
 
