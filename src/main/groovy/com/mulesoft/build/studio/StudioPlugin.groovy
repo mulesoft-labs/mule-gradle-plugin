@@ -99,7 +99,7 @@ class StudioPlugin implements Plugin<Project> {
             MulePluginExtension mule = project.extensions.getByType(MulePluginExtension)
 
             //create the mule-project.xml file if it does not exist
-            StudioProject studioProject = new StudioProject(projectName: project.name, muleConfig: mule)
+            StudioProject studioProject = new StudioProject(project: project, muleConfig: mule)
 
             //create the mule-project if needed
             studioProject.createStudioProjectIfNecessary()

@@ -18,6 +18,7 @@ package com.mulesoft.build.studio
 import com.mulesoft.build.MulePluginExtension
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
+import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory
  */
 class StudioProject {
 
-    private String projectName
+    private Project project
     private MulePluginExtension muleConfig
 
     private static final String PROJECT_FILENAME = "mule-project.xml"
@@ -40,29 +41,30 @@ class StudioProject {
         XmlSlurper slurper = new XmlSlurper(false, false)
 
         //load the classpath resource.
-        def project = slurper.parse(getClass().getResourceAsStream('/blank-mule-project.xml'))
+        def projectXml = slurper.parse(getClass().getResourceAsStream('/blank-mule-project.xml'))
 
         String runtimeVersion = generateRuntimeVersion()
 
         //set the appropriate runtime
         //TODO - REMOVE WORKAROUND FOR GROOVY BUG
         //https://issues.gradle.org/browse/GRADLE-2566
-        project.@runtimeId="org.mule.tooling.server.$runtimeVersion".toString()
+        projectXml.@runtimeId="org.mule.tooling.server.$runtimeVersion".toString()
 
         //set the correct name
-        project.appendNode {
-            name(projectName)
+        projectXml.appendNode {
+            name(project.name)
         }
 
 
-        return project
+        return projectXml
     }
 
     /**
      * Create the mule-project.xml file in the root folder of the project if it does not exist.
      */
     void createStudioProjectIfNecessary() {
-        File projFile = new File(PROJECT_FILENAME)
+
+        File projFile = project.file(PROJECT_FILENAME)
 
         if (projFile.exists()) {
             logger.debug("$PROJECT_FILENAME already exists, not creating it")

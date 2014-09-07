@@ -17,6 +17,8 @@ package com.mulesoft.build.studio
 
 import com.mulesoft.build.MulePluginExtension
 import groovy.xml.XmlUtil
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -53,7 +55,11 @@ class TestStudioPlugin {
         MulePluginExtension pluginConfig = new MulePluginExtension()
         pluginConfig.muleEnterprise = true
 
-        StudioProject project = new StudioProject(projectName: projectName, muleConfig: pluginConfig)
+        String tempDir = System.getProperty('java.io.tmpdir')
+
+        Project studioProject = new ProjectBuilder().withName(projectName).withProjectDir(new File(tempDir)).build();
+
+        StudioProject project = new StudioProject(project: studioProject, muleConfig: pluginConfig)
 
         def rootNode = project.generateProjectXml()
 
