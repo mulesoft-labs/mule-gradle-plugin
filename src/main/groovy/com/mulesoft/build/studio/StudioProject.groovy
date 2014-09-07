@@ -34,6 +34,8 @@ class StudioProject {
 
     private static final String PROJECT_FILENAME = "mule-project.xml"
 
+    private static final String REPLACE_VERSION_ENDING_IN = '.0'
+
     private static final Logger logger = LoggerFactory.getLogger(StudioProject)
 
     protected GPathResult generateProjectXml() {
@@ -81,8 +83,13 @@ class StudioProject {
      * @return the version of the runtime in mule studio
      */
     protected String generateRuntimeVersion() {
-        String ee = muleConfig.muleEnterprise ? '.ee' : ''
+        String ee = muleConfig.muleEnterprise ? '.ee' : '.CE'
         String version = muleConfig.version
+
+        if (version.endsWith(REPLACE_VERSION_ENDING_IN)) {
+            version = version.substring(0, version.length() - REPLACE_VERSION_ENDING_IN.length())
+        }
+
         return version + ee
     }
 }

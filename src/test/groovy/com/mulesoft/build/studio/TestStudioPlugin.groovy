@@ -73,4 +73,31 @@ class TestStudioPlugin {
         assertTrue("version should be on the xml", xml.contains(project.generateRuntimeVersion()))
     }
 
+
+    @Test
+    void testGenerateProyectVersion() {
+
+        String muleVersion = '3.5.0'
+        String newerVersion = '3.5.1'
+        MulePluginExtension pluginConfig = new MulePluginExtension()
+
+        pluginConfig.version = muleVersion
+        pluginConfig.muleEnterprise = true
+
+        StudioProject testSubject = new StudioProject(project: new ProjectBuilder().build(), muleConfig: pluginConfig)
+
+        //3.5.0 EE should produce 3.5.ee
+        assertEquals("Should produce 3.5.ee", "3.5.ee", testSubject.generateRuntimeVersion())
+
+        pluginConfig.muleEnterprise = false
+
+        //3.5.0 CE should produce 3.5.CE
+        assertEquals("Should produce 3.5.CE", "3.5.CE", testSubject.generateRuntimeVersion())
+
+        pluginConfig.version = newerVersion
+        pluginConfig.muleEnterprise = true
+
+        //3.5.1 EE should produce 3.5.1.ee
+        assertEquals("Should produce 3.5.1.ee", "3.5.1.ee", testSubject.generateRuntimeVersion())
+    }
 }
