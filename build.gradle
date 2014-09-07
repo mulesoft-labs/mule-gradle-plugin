@@ -35,6 +35,8 @@ publishing {
 
 }
 
+//force test run on every build
+project.check.dependsOn(project.test)
 
 group = 'org.mulesoft.build'
 version = '1.1.0-SNAPSHOT'
