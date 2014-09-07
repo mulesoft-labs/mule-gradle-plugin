@@ -16,12 +16,14 @@
 package com.mulesoft.build.studio
 
 import com.mulesoft.build.MulePluginExtension
+import com.mulesoft.build.util.FileUtils
 import groovy.xml.XmlUtil
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 
 import static org.junit.Assert.*
+import static org.hamcrest.Matchers.*
 
 /**
  * Created by juancavallotti on 04/01/14.
@@ -54,6 +56,7 @@ class TestStudioPlugin {
         String projectName = 'my-project'
         MulePluginExtension pluginConfig = new MulePluginExtension()
         pluginConfig.muleEnterprise = true
+        InputStream xmlFileStream = getClass().getResourceAsStream('/blank-mule-project.xml')
 
         String tempDir = System.getProperty('java.io.tmpdir')
 
@@ -61,7 +64,7 @@ class TestStudioPlugin {
 
         StudioProject project = new StudioProject(project: studioProject, muleConfig: pluginConfig)
 
-        def rootNode = project.generateProjectXml()
+        def rootNode = project.generateProjectXml(xmlFileStream)
 
         StringWriter out = new StringWriter()
         XmlUtil.serialize(rootNode, out)
@@ -99,5 +102,46 @@ class TestStudioPlugin {
 
         //3.5.1 EE should produce 3.5.1.ee
         assertEquals("Should produce 3.5.1.ee", "3.5.1.ee", testSubject.generateRuntimeVersion())
+    }
+
+
+    @Test
+    void testUpdateProjectVersion() {
+
+        //the key is to have a project with existing file.
+        //first, copy mule-project.xml to the temp dir
+        InputStream origFile = getClass().getResourceAsStream('/mule-project.xml')
+
+        File outputFile = new File(System.getProperty('java.io.tmpdir') + '/mule-project.xml')
+
+        OutputStream os = outputFile.newOutputStream()
+
+        FileUtils.copyStream(origFile, os)
+        os.close()
+
+        //mark the file for deletion after we don't need it
+        outputFile.deleteOnExit()
+
+        //now we can start the test.
+        Project mockProj = new ProjectBuilder().withName('mockStudio')
+                .withProjectDir(new File(System.getProperty('java.io.tmpdir'))).build()
+
+
+        MulePluginExtension pluginConfig = new MulePluginExtension()
+        //set the mule version
+        pluginConfig.version = '3.5.0'
+        pluginConfig.muleEnterprise = true
+
+        //run the test on the subject
+        StudioProject testSubject = new StudioProject(project: mockProj, muleConfig: pluginConfig)
+
+        testSubject.createStudioProjectIfNecessary()
+
+        //read the file to a string and assert.
+        String file = new String(outputFile.readBytes())
+
+        //should contain the string org.mule.tooling.server.3.5.ee
+
+        assertThat(file, containsString('org.mule.tooling.server.3.5.ee'))
     }
 }

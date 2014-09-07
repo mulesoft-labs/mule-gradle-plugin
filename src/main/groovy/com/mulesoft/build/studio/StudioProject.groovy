@@ -38,12 +38,12 @@ class StudioProject {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioProject)
 
-    protected GPathResult generateProjectXml() {
+    protected GPathResult generateProjectXml(InputStream xmlFileStream) {
 
         XmlSlurper slurper = new XmlSlurper(false, false)
 
         //load the classpath resource.
-        def projectXml = slurper.parse(getClass().getResourceAsStream('/blank-mule-project.xml'))
+        def projectXml = slurper.parse(xmlFileStream)
 
         String runtimeVersion = generateRuntimeVersion()
 
@@ -67,13 +67,17 @@ class StudioProject {
     void createStudioProjectIfNecessary() {
 
         File projFile = project.file(PROJECT_FILENAME)
+        InputStream xmlFileStream = null
 
         if (projFile.exists()) {
-            logger.debug("$PROJECT_FILENAME already exists, not creating it")
-            return
+            logger.debug("$PROJECT_FILENAME already exists, updating it")
+            xmlFileStream = projFile.newInputStream()
+        } else {
+            logger.debug("$PROJECT_FILENAME does not exist, will create one from internal template.")
+            xmlFileStream = getClass().getResourceAsStream('/blank-mule-project.xml')
         }
 
-        def xml = generateProjectXml()
+        def xml = generateProjectXml(xmlFileStream)
 
         XmlUtil.serialize(xml, projFile.newWriter('UTF-8', false))
     }
