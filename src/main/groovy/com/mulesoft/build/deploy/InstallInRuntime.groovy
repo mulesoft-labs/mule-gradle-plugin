@@ -50,7 +50,10 @@ class InstallInRuntime extends Copy {
         boolean isDomain = project.plugins.hasPlugin(MuleDomainPlugin)
         def mule = project.mule
 
-        String archiveName = isDomain ? mule.resolveDomainName() : project.name
+        //this plugin needs the mule plugin in order to be correctly executed
+        //so we hope project.mulezip won't fail.
+        String archiveName = isDomain ? mule.resolveDomainName() : project.mulezip.archiveName
+
         String targetLocation = isDomain ? DOMAINS_DIR : APPS_DIR
 
         //determine where to copy the file
@@ -77,11 +80,13 @@ class InstallInRuntime extends Copy {
                 throw new IllegalArgumentException(message)
             }
 
+            logger.debug("Archive name to copy: $archiveName")
+
             //should copy the files in the build directory to the
             //configured runtime
             from project.buildDir
 
-            include "${archiveName}.zip"
+            include archiveName
 
             destinationDir = destination
         }

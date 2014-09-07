@@ -15,10 +15,13 @@
  */
 package com.mulesoft.build.deploy
 
+import com.mulesoft.build.MulePlugin
 import com.mulesoft.build.MulePluginConvention
 import com.mulesoft.build.MulePluginExtension
+import com.mulesoft.build.MuleZip
 import junit.framework.Assert
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.tasks.TaskInstantiationException
 import org.gradle.testfixtures.ProjectBuilder
 
@@ -38,7 +41,11 @@ class TestDeployPlugin {
 
         //apply the mule plugin
         proj.extensions.create('mule', MulePluginExtension)
+
         proj.convention.create('muleConvention', MulePluginConvention)
+
+        //add the mulezip task
+        proj.tasks.create('mulezip', MuleZip.class)
 
         //configure the install directory
         proj.mule.installPath = '/non/existing/path'
