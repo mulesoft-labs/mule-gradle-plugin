@@ -44,7 +44,7 @@ class MuleRunTask extends JavaExec {
         def args = []
 
         //check inf mule-app.properties exist
-        File muleAppProps = new File(MULE_APP_PROPS)
+        File muleAppProps = project.file(MULE_APP_PROPS)
 
         if (muleAppProps.exists()) {
             args.add('-props')
@@ -54,7 +54,7 @@ class MuleRunTask extends JavaExec {
         args.add('-config')
 
         //check if mule-config exists
-        File deployProps = new File(MULE_DEPLOY)
+        File deployProps = project.file(MULE_DEPLOY)
 
 
 
