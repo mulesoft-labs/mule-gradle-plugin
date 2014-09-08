@@ -26,7 +26,7 @@ Gradle Plugin for Building Mule Apps
 
 This plugin allows the user to build mule applications with the gradle build system.
 
-**Important Note: This plugin currently works only for gradle 1.x, future versions will support 2.x but 1.x support will be dropped.**
+**Important Note: Starting from published version 1.1.0, the plugin supports both gradle 1.x and 2.x.**
 
 Install the plugin locally
 ----
@@ -50,7 +50,7 @@ Add into an existing project's root a `build.gradle` file with the following con
 
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.1.0'
 	}
 
 	repositories {
@@ -301,7 +301,7 @@ mule integrations inside a Java App. In order to add mule dependencies automatic
 
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0-SNAPSHOT'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.1.0'
 	}
 
 	repositories {
@@ -342,7 +342,7 @@ In order to start a domain project, you can start with a `build.gradle` similar 
 ```groovy
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.0.0'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.1.0'
 	}
 
 	repositories {
