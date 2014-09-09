@@ -52,7 +52,7 @@ class InstallInRuntime extends Copy {
 
         //this plugin needs the mule plugin in order to be correctly executed
         //so we hope project.mulezip won't fail.
-        String archiveName = isDomain ? mule.resolveDomainName() : project.mulezip.archiveName
+        String archiveName = isDomain ? mule.resolveDomainName() + '.zip' : project.mulezip.archiveName
 
         String targetLocation = isDomain ? DOMAINS_DIR : APPS_DIR
 
