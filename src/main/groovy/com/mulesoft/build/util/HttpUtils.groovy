@@ -31,4 +31,9 @@ class HttpUtils {
         })
     }
 
+    static String generateAuthenticationHeader(String username, String password) {
+        String authString = "$username:$password"
+        return 'Basic ' + authString.bytes.encodeBase64().toString()
+    }
+
 }

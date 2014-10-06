@@ -70,7 +70,7 @@ class DeployToMMCTask extends DefaultTask {
 
         logger.debug('Creating http connection to MMC')
 
-        //configure network auth
+        //configure network auth for preemptive
         HttpUtils.configureNetworkAuthenticator(env.username, env.password)
 
         //create an url connection
@@ -86,6 +86,7 @@ class DeployToMMCTask extends DefaultTask {
             conn.useCaches = false
             conn.doOutput = true
             conn.setRequestMethod('POST')
+            conn.setRequestProperty('Authorization', HttpUtils.generateAuthenticationHeader(env.username, env.password))
             conn.setRequestProperty('Content-Type', "multipart/form-data; boundary=$mpbuilder.boundary")
 
             logger.debug('Sending multipart body...')

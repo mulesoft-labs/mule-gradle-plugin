@@ -83,6 +83,7 @@ class UploadToCloudhubTask extends DefaultTask {
             conn.doOutput = true
             conn.useCaches = false
             conn.setRequestMethod('POST')
+            conn.setRequestProperty('Authorization', HttpUtils.generateAuthenticationHeader(env.username, env.password))
             conn.setRequestProperty('Content-Type', 'application/octet-stream')
 
             //write the payload
