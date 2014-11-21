@@ -24,6 +24,8 @@
 Gradle Plugin for Building Mule Apps
 ==================
 
+[![Build Status](https://travis-ci.org/mulesoft-labs/mule-gradle-plugin.svg)](https://travis-ci.org/mulesoft-labs/mule-gradle-plugin)
+
 This plugin allows the user to build mule applications with the gradle build system.
 
 **Important Note: Starting from published version 1.1.0, the plugin supports both gradle 1.x and 2.x.**
