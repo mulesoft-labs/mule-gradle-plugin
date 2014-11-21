@@ -26,8 +26,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username mulesoftPublishUsername
-                password mulesoftPublishPassword
+                username(project.hasProperty('mulesoftPublishUsername') ? mulesoftPublishUsername : '')
+                password(project.hasProperty('mulesoftPublishPassword') ? mulesoftPublishPassword : '')
             }
             url 'https://repository-master.mulesoft.org/releases'
         }
