@@ -53,8 +53,12 @@ class StudioProject {
         projectXml.@runtimeId="org.mule.tooling.server.$runtimeVersion".toString()
 
         //set the correct name
-        projectXml.appendNode {
-            name(project.name)
+        if (projectXml.name.size()) {
+            projectXml.name = project.name
+        } else {
+            projectXml.appendNode {
+                name(project.name)
+            }
         }
 
 

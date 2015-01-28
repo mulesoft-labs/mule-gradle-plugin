@@ -78,7 +78,7 @@ class TestStudioPlugin {
 
 
     @Test
-    void testGenerateProyectVersion() {
+    void testGenerateProjectVersion() {
 
         String muleVersion = '3.5.0'
         String newerVersion = '3.5.1'
@@ -144,4 +144,23 @@ class TestStudioPlugin {
 
         assertThat(file, containsString('org.mule.tooling.server.3.5.ee'))
     }
+
+    @Test
+    void testSingleProjectName() {
+        String projectName = 'my-project'
+        MulePluginExtension pluginConfig = new MulePluginExtension()
+        InputStream xmlFileStream = getClass().getResourceAsStream('/mule-project-with-name.xml')
+
+        String tempDir = System.getProperty('java.io.tmpdir')
+        Project studioProject = new ProjectBuilder().withName(projectName).withProjectDir(new File(tempDir)).build();
+        StudioProject project = new StudioProject(project: studioProject, muleConfig: pluginConfig)
+
+        def rootNode = project.generateProjectXml(xmlFileStream)
+
+        StringWriter out = new StringWriter()
+        XmlUtil.serialize(rootNode, out)
+        String xml = out.toString()
+        assertEquals("project name should be updated and appear only once", 1, (xml =~ /<name>my-project<\/name>/).size())
+    }
+
 }
