@@ -162,6 +162,7 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                 //if there is a provided test runtime, then add the clover plugins there
                 if (project.configurations.findByName('providedTestRuntime')) {
                     providedTestRuntime(group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version, ext: 'zip')
+                    providedTestRuntime(group: UnpackCloverTask.MULE_CLOVER_GROUP, name: UnpackCloverTask.MULE_CLOVER_NAME, version: mule.version, ext: 'zip')
 
                     //add the unpack clover task to the project.
                     def unpackClover = project.tasks.create('unpackClover', UnpackCloverTask)

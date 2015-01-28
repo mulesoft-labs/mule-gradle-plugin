@@ -26,8 +26,14 @@ import org.gradle.api.tasks.TaskAction
  */
 class UnpackCloverTask extends DefaultTask {
 
+
+    //clover plugins.
     public static final String CLOVER_GROUP = 'com.cloveretl'
     public static final String CLOVER_NAME = 'cloveretl-engine'
+
+    //mule clover custom plugins
+    public static final String MULE_CLOVER_GROUP = 'com.mulesoft.muleesb.datamapper'
+    public static final String MULE_CLOVER_NAME = 'mule-clover-plugins'
 
     @TaskAction
     void doUnpackClover() {
@@ -50,15 +56,20 @@ class UnpackCloverTask extends DefaultTask {
         Set<File> finalFiles = providedTestRuntime - providedTestCompile
 
         File clover = finalFiles.find({
-            it.name.startsWith('cloveretl-engine')
+            it.name.startsWith(CLOVER_NAME)
         })
 
-        if (!clover) {
+        File muleClover = finalFiles.find({
+            it.name.startsWith(MULE_CLOVER_NAME)
+        })
+
+        if (!clover || !muleClover) {
             logger.error('Could not find Clover ETL engine, required to run the tests...')
             throw new IllegalStateException('Could not find Clover ETL engine, required to run the tests...')
         }
 
         if (logger.debugEnabled) logger.debug("Found Clover ETL engine in $clover")
+        if (logger.debugEnabled) logger.debug("Found Mule Clover Plugins in $muleClover")
 
 
         JavaPluginConvention convention = project.convention.findPlugin(JavaPluginConvention)
@@ -66,6 +77,8 @@ class UnpackCloverTask extends DefaultTask {
         if (logger.debugEnabled) logger.debug("Clover will be unzipped into: ${convention.sourceSets.test.output.classesDir}")
 
         copyTask.from project.zipTree(clover)
+        copyTask.into convention.sourceSets.test.output.classesDir
+        copyTask.from project.zipTree(muleClover)
         copyTask.into convention.sourceSets.test.output.classesDir
         copyTask.execute()
     }
