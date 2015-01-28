@@ -120,6 +120,9 @@ class MulePlugin implements Plugin<Project> {
         initProjectTask.description = 'Create the necessary directory structures suitable for a mule project. ' +
                 'Includes sample files.'
         initProjectTask.group = MulePluginConstants.MULE_GROUP
+
+        //configure test resources.s
+        addTestResources(project)
     }
 
     private Task addZipDistributionTask(Project project) {
@@ -144,5 +147,19 @@ class MulePlugin implements Plugin<Project> {
         ziptask.group = BasePlugin.BUILD_GROUP
 
         return ziptask
+    }
+
+
+    private void addTestResources(Project project) {
+        project.afterEvaluate { proj ->
+            proj.sourceSets {
+                test {
+                    resources {
+                        MulePluginConvention convention = project.convention.getByName('muleConvention')
+                        srcDirs += convention.appResourcesDirectory()
+                    }
+                }
+            }
+        }
     }
 }
