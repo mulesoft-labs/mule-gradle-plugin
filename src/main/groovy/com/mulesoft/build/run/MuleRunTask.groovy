@@ -68,7 +68,8 @@ class MuleRunTask extends JavaExec {
         Properties props = new Properties()
         props.load(deployProps.newInputStream())
 
-        args.addAll(props.getProperty(CONFIG_RESOURCES_KEY).split(',').collect({APP_DIR + it}))
+        def configs = props.getProperty(CONFIG_RESOURCES_KEY).split(',').collect({APP_DIR + it})
+        args.add(configs.join(','))
         logger.info("JVM Arguments for running the app: $args")
         this.args = args
     }
