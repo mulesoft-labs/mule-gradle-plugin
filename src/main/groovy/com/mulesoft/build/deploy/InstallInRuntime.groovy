@@ -32,7 +32,7 @@ class InstallInRuntime extends Copy {
 
     static final String DOMAINS_DIR = 'domains'
 
-    static final String TASK_DESC = 'Install the generated archive into the location defined in mule.installPath ' +
+    static final String TASK_DESC = 'Deploy the generated archive into a local runtime defined by mule.installPath ' +
             'or MULE_HOME environment variable'
 
 

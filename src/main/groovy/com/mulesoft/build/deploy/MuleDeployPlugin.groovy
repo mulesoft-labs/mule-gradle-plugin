@@ -36,7 +36,11 @@ class MuleDeployPlugin implements Plugin<Project> {
 
         project.afterEvaluate { proj ->
             //define the task
-            Task task = proj.tasks.create('install', InstallInRuntime)
+
+            //NOTE: Originally this task was called install but given this conflicts with
+            //the maven plugin and it is not really self-explicative, it will get renamed.
+            //SEE: https://github.com/mulesoft-labs/mule-gradle-plugin/issues/26
+            Task task = proj.tasks.create('deployLocally', InstallInRuntime)
 
             Task findRuntime = proj.tasks.create('configureInstall') << {
                 //do this as soon as we have the effective config.
