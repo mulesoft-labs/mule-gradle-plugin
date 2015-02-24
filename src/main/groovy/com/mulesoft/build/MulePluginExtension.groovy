@@ -60,6 +60,14 @@ class MulePluginExtension {
     String junitVersion = '4.9'
 
     /**
+     * By default, the plugin includes many repositories that allow resolution of all the artifacts needed to build
+     * mule Apps. In some enterprise setups, these repositories are proxied and / or cached. If this is the situation
+     * this flag will disable the addition of these default repositories and give the user full responsibility of adding
+     * repositories.
+     */
+    boolean disableDefaultRepositories = false
+
+    /**
      * Credentials for the EE customer repository, this takes effect if muleEnterprise = true
      * These credentials may be obtained through a support ticket.
      */

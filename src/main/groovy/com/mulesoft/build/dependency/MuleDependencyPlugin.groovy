@@ -55,8 +55,13 @@ class MuleDependencyPlugin implements Plugin<Project> {
         //dependencies.
         project.afterEvaluate({ Project proj ->
 
-            //add the default repositories to the build
-            configureRepositories(proj)
+            if (!proj.mule.disableDefaultRepositories) {
+                logger.debug('Will configure the default repositories.')
+                //add the default repositories to the build
+                configureRepositories(proj)
+            } else {
+                logger.debug('Default repositories are disabled by config.')
+            }
 
             logger.debug('Applying dependencies after project\'s evaluation.')
             DependenciesConfigurer configurer = new MuleProjectDependenciesConfigurer(project: proj, mule: proj.mule)
@@ -92,8 +97,10 @@ class MuleDependencyPlugin implements Plugin<Project> {
         logger.debug("Adding repositories for the artifacts to the project...")
         proj.repositories {
 
+
             //local maven repository
-            mavenLocal()
+            //mavenLocal()
+            //REMOVING THE USE OF MAVEN LOCAL.
 
             //central maven repository
             mavenCentral()
