@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 juancavallotti.
+ * Copyright 2015 juancavallotti.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package com.mulesoft.build.domain
 
 import com.mulesoft.build.MulePluginConvention
 import org.gradle.api.Project
+import org.gradle.api.internal.tasks.options.Option
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.bundling.Zip
 
@@ -25,11 +28,9 @@ import org.gradle.api.tasks.bundling.Zip
  */
 class DomainZip extends Zip {
 
-    DomainZip() {
 
-        project.afterEvaluate {
-            configureArtifacts()
-        }
+    DomainZip() {
+        configureArtifacts()
     }
 
 
@@ -50,24 +51,34 @@ class DomainZip extends Zip {
         }
 
         //add the logic for copying the apps.
-        into('apps') {
-            Set<File> files = []
-            project.subprojects.each { subproj ->
-                files.addAll(subproj.configurations.archives.allArtifacts.files.files)
+        rootSpec.into('apps') {
+            from {
+                getModuleArchives()
             }
-
-            from files
         }
 
         //compile-time deps will go to the domain's lib directory
-        into('lib') {
-
-            Set<File> providedFiles = project.configurations.providedCompile.files
-            Set<File> compileFiles = project.configurations.compile.files
-
-            from (compileFiles - providedFiles)
+        rootSpec.into('lib') {
+            from {
+                getLibs()
+            }
             include '**.jar'
         }
     }
 
+    @InputFiles
+    public Set<File> getLibs() {
+        Set<File> providedFiles = project.configurations.providedCompile.files
+        Set<File> compileFiles = project.configurations.compile.files
+        return compileFiles - providedFiles
+    }
+
+    @InputFiles
+    public Set<File> getModuleArchives() {
+        Set<File> files = []
+        project.subprojects.each { subproj ->
+            files.addAll(subproj.configurations.archives.allArtifacts.files.files)
+        }
+        return files
+    }
 }
