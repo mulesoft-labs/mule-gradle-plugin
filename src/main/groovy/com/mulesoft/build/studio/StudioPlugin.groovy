@@ -15,12 +15,14 @@
  */
 package com.mulesoft.build.studio
 
+import com.mulesoft.build.MulePlugin
 import com.mulesoft.build.MulePluginConstants
 import com.mulesoft.build.MulePluginExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
+import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.eclipse.model.BuildCommand
 import org.gradle.plugins.ide.eclipse.model.EclipseModel
 import org.slf4j.Logger
@@ -41,10 +43,10 @@ class StudioPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         //the studio plugin also adds the mule nature.
-        project.apply(plugin: 'mule')
+        project.apply(plugin: MulePlugin)
 
         //apply the base plugin and then customize.
-        project.apply(plugin: 'eclipse')
+        project.apply(plugin: EclipsePlugin)
 
 
         EclipseModel eclipseConfig = project.extensions.getByType(EclipseModel)

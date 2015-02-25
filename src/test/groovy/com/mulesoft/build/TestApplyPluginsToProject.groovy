@@ -40,25 +40,31 @@ class TestApplyPluginsToProject {
     public static Collection<Object[]> getParams() {
 
         def classes = [
-                [MulePlugin.class] as Object[],
-                [MuleDomainPlugin.class] as Object[],
-                [StudioPlugin.class] as Object[]
+                [[MulePlugin.class]] as Object[],
+                [[MulePlugin.class, MMCPlugin.class]] as Object[],
+                [[MulePlugin.class, CloudhubPlugin.class]] as Object[],
+                [[MulePlugin.class, MMCPlugin.class, CloudhubPlugin.class]] as Object[],
+                [[MuleDomainPlugin.class]] as Object[],
+                [[StudioPlugin.class]] as Object[]
         ] as List
 
         return classes;
     }
 
     @Parameterized.Parameter
-    public Class pluginClass;
+    public Collection<Class> pluginClasses;
 
 
     @Test
     public void testApplyPlugin() throws Exception {
 
+
         Project proj = ProjectBuilder.builder().withName('Sample Project').build()
 
+        pluginClasses.each {
+            proj.apply plugin: it
+        }
 
-        proj.apply plugin: pluginClass
         proj.evaluate()
 
         //at this point everything should have gone ok.

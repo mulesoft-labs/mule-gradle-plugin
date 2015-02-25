@@ -15,6 +15,9 @@
  */
 package com.mulesoft.build
 
+import com.mulesoft.build.dependency.MuleDependencyPlugin
+import com.mulesoft.build.deploy.MuleDeployPlugin
+import com.mulesoft.build.run.MuleRunPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -23,6 +26,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -39,7 +43,7 @@ class MulePlugin implements Plugin<Project> {
     void apply(Project project) {
 
         //apply the java plugin.
-        project.apply(plugin: 'java')
+        project.apply(plugin: JavaPlugin)
 
         //add the mule extension, only if not present
         if (project.extensions.findByType(MulePluginExtension) == null) {
@@ -52,13 +56,13 @@ class MulePlugin implements Plugin<Project> {
         //apply plugins that also read the config
 
         //add the mule-esb dependencies
-        project.apply(plugin: 'mule-dependencies')
+        project.apply(plugin: MuleDependencyPlugin)
 
         //add the tasks related to deployment
-        project.apply(plugin: 'mule-deploy')
+        project.apply(plugin: MuleDeployPlugin)
 
         //add the tasks related to execution
-        project.apply(plugin: 'mule-run')
+        project.apply(plugin: MuleRunPlugin)
 
 
         //add providedCompile and providedRuntime for dependency management.

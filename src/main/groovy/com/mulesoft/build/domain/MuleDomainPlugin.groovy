@@ -17,6 +17,8 @@ package com.mulesoft.build.domain
 
 import com.mulesoft.build.MulePluginConstants
 import com.mulesoft.build.MulePluginConvention
+import com.mulesoft.build.dependency.MuleDependencyPlugin
+import com.mulesoft.build.deploy.MuleDeployPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -45,10 +47,10 @@ class MuleDomainPlugin implements Plugin<Project> {
         //create the mule plugin extension before the dependencies plguin does.
         MuleDomainPluginExtension mule = project.extensions.create('mule', MuleDomainPluginExtension, project.name)
 
-        project.apply plugin: 'mule-dependencies'
+        project.apply plugin: MuleDependencyPlugin
 
         //this project can be deployed in a container.
-        project.apply plugin: 'mule-deploy'
+        project.apply plugin: MuleDeployPlugin
 
 
         //add the mule plugin convention.
