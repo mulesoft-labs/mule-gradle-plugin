@@ -36,13 +36,16 @@ class DomainZip extends Zip {
 
     void configureArtifacts() {
 
-        String archiveName = project.mule.resolveDomainName()
 
-        //we'd like to place the results on the build dir.
+        project.afterEvaluate {
+            String archiveName = project.mule.resolveDomainName()
+            //the zip name of the domain is the name of the project.
+            baseName = archiveName
+        }
+
+            //we'd like to place the results on the build dir.
         destinationDir = project.buildDir
 
-        //the zip name of the domain is the name of the project.
-        baseName = archiveName
 
         //get the plugin convention
         from {
