@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 juancavallotti.
+ * Copyright 2015 juancavallotti.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,6 +155,17 @@ class MulePlugin implements Plugin<Project> {
 
 
     private void addTestResources(Project project) {
+
+        //include any zip that might be on plugins as external classpath.
+        Task unpackPluginJars = project.tasks.create('unpackPluginJars', UnpackPluginJarsTask.class)
+
+        unpackPluginJars.doLast {
+            logger.debug('Adding unpacked plugin jars as part of the test classpath...')
+            project.test.classpath = project.test.classpath + unpackPluginJars.pluginJars
+        }
+
+        project.tasks.test.dependsOn unpackPluginJars
+
         project.afterEvaluate { proj ->
             proj.sourceSets {
                 test {
