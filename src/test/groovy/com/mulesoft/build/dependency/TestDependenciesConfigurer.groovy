@@ -69,4 +69,24 @@ class TestDependenciesConfigurer {
 
     }
 
+    @Test
+    public void testMultipleComponentClosures() throws Exception {
+
+        MuleProjectDependenciesConfigurer configurer = new MuleProjectDependenciesConfigurer()
+        MulePluginExtension extension = new MulePluginExtension()
+
+        extension.components {
+            modules += 'ws'
+        }
+
+        extension.components {
+            modules += 'db'
+        }
+
+        configurer.mule = extension
+        configurer.applyDefaults()
+
+        assertThat(extension.modules, hasItem('ws'))
+        assertThat(extension.modules, hasItem('db'))
+    }
 }

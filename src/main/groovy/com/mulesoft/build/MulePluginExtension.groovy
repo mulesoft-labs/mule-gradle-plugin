@@ -82,7 +82,7 @@ class MulePluginExtension {
      * Processed after the default libs, modules, transports has been configured, this is the preferred way of customizing
      * modules.
      */
-    Closure<Void> components = null
+    List<Closure<Void>> components = []
 
     /**
      * Mule core libraries, this normally should not be modified, if empty after project evaluation, defaults will be
@@ -122,7 +122,7 @@ class MulePluginExtension {
     Set<Map<String, String>> plugins = []
 
     void components(Closure<Void> closure) {
-        this.components = closure
+        this.components << closure
     }
 
 
