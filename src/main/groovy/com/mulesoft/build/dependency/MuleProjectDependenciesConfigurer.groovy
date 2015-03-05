@@ -116,7 +116,9 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
         //finally call the closure to finalize the customization of the modules.
         if (mule.components) {
             logger.debug('Executing components closure...')
-            ConfigureUtil.configure(mule.components, mule)
+            mule.components.each {
+                ConfigureUtil.configure(it, mule)
+            }
         } else {
             logger.debug('Components closure not present.')
         }
