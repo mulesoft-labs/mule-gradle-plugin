@@ -15,8 +15,14 @@
  */
 package com.mulesoft.build.dependency
 
+import com.mulesoft.build.MulePlugin
 import com.mulesoft.build.MulePluginExtension
+import com.mulesoft.build.domain.MuleDomainPlugin
+import com.mulesoft.build.studio.StudioPlugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -26,6 +32,80 @@ import static org.hamcrest.Matchers.*
  * Created by juancavallotti on 24/05/14.
  */
 class TestDependenciesConfigurer {
+
+
+    @Test
+    public void testAddDataMapperDependencies() {
+
+        //the project should contain the data mapper dependencies
+        //only if it is a mule (or studio) enterprise project, this plugin gets added to
+        //domains and could be added to build an embedded app, those cases should not
+        //get the clover dependencies for running unit tests.
+        Project proj = ProjectBuilder.builder().withName('mule').build()
+
+        proj.apply plugin: StudioPlugin
+
+        proj.mule.muleEnterprise = true
+
+        proj.evaluate()
+
+        Configuration config = proj.configurations.getByName(MuleProjectDependenciesConfigurer.TEST_RUNTIME_PLUGINS_CONFIGURATION)
+
+        //check the config is there.
+        assertThat('Project should contain the config', config, not( nullValue() ))
+
+        //the config should have 2 configured elements.
+        assertThat('Should have 2 configured artifacts.', config.getAllDependencies(), hasSize(2))
+    }
+
+
+    @Test
+    public void testDataMapperNotPresent() {
+        Project proj = ProjectBuilder.builder().withName('domain').build()
+
+        proj.apply plugin: MuleDomainPlugin
+
+        proj.mule.muleEnterprise = true
+
+        proj.evaluate()
+
+        Configuration config = proj.configurations.getByName(MuleProjectDependenciesConfigurer.TEST_RUNTIME_PLUGINS_CONFIGURATION)
+
+        //at this point if there is no config, no harm
+        //I will not enforce this because the deps plugin adds it for all projects
+        //and it might be useful on the future.
+        if (config == null) {
+            return //PASS
+        }
+
+        //the config should have 2 configured elements.
+        assertThat('Should not have test runtime artifacts.', config.getAllDependencies(), hasSize(0))
+    }
+
+
+    @Test
+    public void testDataMapperNotPresentInEmbedded() {
+        Project proj = ProjectBuilder.builder().withName('embedded').build()
+
+        proj.apply plugin: JavaPlugin
+        proj.apply plugin: MuleDependencyPlugin
+
+        proj.mule.muleEnterprise = true
+
+        proj.evaluate()
+
+        Configuration config = proj.configurations.getByName(MuleProjectDependenciesConfigurer.TEST_RUNTIME_PLUGINS_CONFIGURATION)
+
+        //at this point if there is no config, no harm
+        //I will not enforce this because the deps plugin adds it for all projects
+        //and it might be useful on the future.
+        if (config == null) {
+            return //PASS
+        }
+
+        //the config should have 2 configured elements.
+        assertThat('Should not have test runtime artifacts.', config.getAllDependencies(), hasSize(0))
+    }
 
 
     @Test

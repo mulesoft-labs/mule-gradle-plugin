@@ -164,7 +164,7 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                 testDeps += [group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version]
 
                 //if there is a provided test runtime, then add the clover plugins there
-                if (project.configurations.findByName('providedTestRuntime')) {
+                if (project.plugins.hasPlugin(MulePlugin)) {
                     "$TEST_RUNTIME_PLUGINS_CONFIGURATION"(group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version, ext: 'zip')
                     "$TEST_RUNTIME_PLUGINS_CONFIGURATION"(group: UnpackCloverTask.MULE_CLOVER_GROUP, name: UnpackCloverTask.MULE_CLOVER_NAME, version: mule.version, ext: 'zip')
 
