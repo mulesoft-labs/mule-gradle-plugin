@@ -50,10 +50,10 @@ class UnpackCloverTask extends DefaultTask {
         def copyTask = project.tasks.create('copyClover', Copy)
 
 
-        Set<File> providedTestRuntime = project.configurations.providedTestRuntime.files
-        Set<File> providedTestCompile = project.configurations.providedTestCompile.files
+//        Set<File> providedTestRuntime = project.configurations.providedTestRuntime.files
+//        Set<File> providedTestCompile = project.configurations.providedTestCompile.files
 
-        Set<File> finalFiles = providedTestRuntime - providedTestCompile
+        Set<File> finalFiles = project.configurations.getByName(MuleProjectDependenciesConfigurer.TEST_RUNTIME_PLUGINS_CONFIGURATION).files//providedTestRuntime - providedTestCompile
 
         File clover = finalFiles.find({
             it.name.startsWith(CLOVER_NAME)

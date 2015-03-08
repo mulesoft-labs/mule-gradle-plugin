@@ -36,7 +36,7 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
     static final EE_GROUPID = 'com.mulesoft.muleesb'
     static final EE_MODULES_GROUPID = EE_GROUPID + '.modules'
     static final EE_TRANSPORTS_GROUPID = EE_GROUPID + '.transports'
-
+    public static final String TEST_RUNTIME_PLUGINS_CONFIGURATION = 'testRuntimePlugins'
 
 
     Project project
@@ -130,6 +130,10 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
 
         List<Map> deps = buildDependencies()
 
+        //check if there is the configuration
+        if (!project.configurations.findByName(TEST_RUNTIME_PLUGINS_CONFIGURATION)) {
+            project.configurations.create(TEST_RUNTIME_PLUGINS_CONFIGURATION)
+        }
 
         project.dependencies {
             if (project.configurations.findByName('providedCompile')) {
@@ -162,9 +166,9 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                 testDeps += [group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version]
 
                 //if there is a provided test runtime, then add the clover plugins there
-                if (project.configurations.findByName('providedTestRuntime')) {
-                    providedTestRuntime(group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version, ext: 'zip')
-                    providedTestRuntime(group: UnpackCloverTask.MULE_CLOVER_GROUP, name: UnpackCloverTask.MULE_CLOVER_NAME, version: mule.version, ext: 'zip')
+                if (project.plugins.hasPlugin(MulePlugin)) {
+                    "$TEST_RUNTIME_PLUGINS_CONFIGURATION"(group: UnpackCloverTask.CLOVER_GROUP, name: UnpackCloverTask.CLOVER_NAME, version: mule.version, ext: 'zip')
+                    "$TEST_RUNTIME_PLUGINS_CONFIGURATION"(group: UnpackCloverTask.MULE_CLOVER_GROUP, name: UnpackCloverTask.MULE_CLOVER_NAME, version: mule.version, ext: 'zip')
 
                     //add the unpack clover task to the project.
                     def unpackClover = project.tasks.create('unpackClover', UnpackCloverTask)
