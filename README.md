@@ -52,7 +52,7 @@ Add into an existing project's root a `build.gradle` file with the following con
 
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.1.1'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.2.0'
 	}
 
 	repositories {
@@ -303,7 +303,7 @@ mule integrations inside a Java App. In order to add mule dependencies automatic
 
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.1.1'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.2.0'
 	}
 
 	repositories {
@@ -344,7 +344,7 @@ In order to start a domain project, you can start with a `build.gradle` similar 
 ```groovy
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.1.1'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.2.0'
 	}
 
 	repositories {
