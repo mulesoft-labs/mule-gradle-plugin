@@ -24,6 +24,6 @@ class CloudhubPluginConvention {
     /**
      * This points where the REST API of cloudhub is. This requires basic authentication.
      */
-    String clouduhbApiEndpoint = 'https://cloudhub.io/api'
+    String clouduhbApiEndpoint = 'https://anypoint.mulesoft.com/cloudhub/api'
 
 }
