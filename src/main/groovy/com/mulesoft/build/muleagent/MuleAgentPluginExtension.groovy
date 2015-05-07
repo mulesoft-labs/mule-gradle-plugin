@@ -26,7 +26,7 @@ class MuleAgentPluginExtension {
     /**
      * The configured environments.
      */
-    Map<String, MuleEnvironment> environments = [:] as Map
+    Map<String, List<MuleEnvironment>> environments = [:] as Map
 
     /**
      * The environment in which to deploy by default. If null, this will be inferred by certain rules, checking if there
@@ -54,8 +54,29 @@ class MuleAgentPluginExtension {
      * @return
      */
     def methodMissing(String name, def args) {
-        addEnvironment(name, args as MuleEnvironment)
+
+        if (args.length > 0 && args[0] instanceof List) {
+            environments[name] = args[0]
+        } else {
+            addEnvironment(name, args as MuleEnvironment)
+        }
     }
+
+    /**
+     * DSL implementation for adding an environment with all default values.
+     * @param name the name of the environment.
+     */
+    def propertyMissing(String name) {
+        addEnvironment(name, new MuleEnvironment())
+    }
+
+
+    List<MuleEnvironment> cluster(Closure<Void> closure) {
+        def context = new ClusterDelegate()
+        ConfigureUtil.configure(closure, context)
+        return context.envs
+    }
+
 
     /**
      * Logic for resolving the target environment
@@ -67,7 +88,7 @@ class MuleAgentPluginExtension {
         }
 
         if (defaultEnvironment != null) {
-            return [environments[defaultEnvironment]]
+            return environments[defaultEnvironment]
         }
 
         if (environments.size() > 1) {
@@ -76,7 +97,7 @@ class MuleAgentPluginExtension {
         }
 
         //return any environment
-        return [environments.find {return true}.value]
+        return environments.find {return true}.value
 
     }
 }

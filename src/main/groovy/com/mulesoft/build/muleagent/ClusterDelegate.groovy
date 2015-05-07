@@ -17,20 +17,18 @@
 package com.mulesoft.build.muleagent
 
 /**
- * Encapsulates the information of an environment from the perspective of the mule agent.
- * Created by juancavallotti on 5/6/15.
+ * Utility class to assist on the definition of clusters.
+ * Created by juancavallotti on 5/7/15.
  */
-class MuleEnvironment {
+class ClusterDelegate {
 
-    /**
-     * The base url of the mule environment where the agent's
-     * HTTP listener is waiting for requests.
-     */
-    String baseUrl = 'http://localhost:9999/mule'
+    List<MuleEnvironment> envs = []
 
-    /**
-     * The name to be used for deployment instead of the project name.
-     */
-    String appName = null
+    def methodMissing(String name, def args) {
+        envs.add(args as MuleEnvironment)
+    }
 
+    def propertyMissing(String name) {
+        envs.add(new MuleEnvironment())
+    }
 }

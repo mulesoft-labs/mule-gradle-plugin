@@ -17,9 +17,6 @@
 package com.mulesoft.build.muleagent
 
 import com.mulesoft.build.util.FileUtils
-import com.mulesoft.build.util.HttpUtils
-import groovyx.net.http.ContentType
-import groovyx.net.http.RESTClient
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
