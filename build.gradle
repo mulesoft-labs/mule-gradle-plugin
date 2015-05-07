@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
+    }
+}
+
+apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
@@ -40,3 +52,51 @@ project.check.dependsOn(project.test)
 
 group = 'org.mulesoft.build'
 version = '2.0.0-SNAPSHOT'
+
+//for publishing in gradle's plugin site.
+pluginBundle {
+    website = 'https://github.com/mulesoft-labs/mule-gradle-plugin'
+    vcsUrl = 'https://github.com/mulesoft-labs/mule-gradle-plugin'
+    description = 'Gradle Plugin for building MuleESB Applications, both community and enterprise.'
+    tags = ['mule', 'mulesoft', 'esb', 'anypoint', 'cloudhub']
+
+    plugins {
+        mule {
+            id = 'com.mulesoft.mule'
+            displayName = 'Plugin for Building MuleESB Apps.'
+        }
+        mulestudio {
+            id = 'com.mulesoft.mulestudio'
+            displayName = 'Plugin for Building MuleESB Apps and integrated with Anypoint Studio.'
+        }
+        dependencies {
+            id = 'com.mulesoft.mule-dependencies'
+            displayName = 'Plugin for Building Embedded MuleESB Apps.'
+        }
+        mmc {
+            id = 'com.mulesoft.mmc'
+            displayName = 'Plugin for deploying MuleESB apps into Mule Management Console.'
+        }
+        deploy {
+            id = 'com.mulesoft.mule-deploy'
+            displayName = 'Plugin for locally deploying MuleESB Apps.'
+        }
+        domain {
+            id = 'com.mulesoft.mule-domain'
+            displayName = 'Plugin for Building MuleESB Shared domain Apps.'
+        }
+        cloudhub {
+            id = 'com.mulesoft.cloudhub'
+            displayName = 'Plugin for deploying MuleESB apps into Cloudhub.'
+        }
+        run {
+            id = 'com.mulesoft.mule-run'
+            displayName = 'Plugin for running MuleESB apps within the build.'
+        }
+
+        muleAgent {
+            id = 'com.mulesoft.mule-agent'
+            displayName = 'Plugin for deploying MuleESB apps using the new Management Agent'
+        }
+    }
+}
