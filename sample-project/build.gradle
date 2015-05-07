@@ -1,22 +1,22 @@
 buildscript {
 	dependencies {
-		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.2.0'
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '2.0.0-SNAPSHOT'
+        //classpath "org.codehaus.groovy.modules.http-builder:http-builder:0.5.2"
 	}
 
 	repositories {
-        maven {
-            url 'http://repository.mulesoft.org/releases'
-        }
+        mavenLocal()
+        //mavenCentral()
 	}
 }
 
 apply plugin: 'mulestudio'
 
-apply plugin: 'cloudhub'
+apply plugin: 'mule-agent'
 
 apply plugin: 'mmc'
 
-mule.version = '3.5.0'
+mule.version = '3.6.0'
 
 mule.muleEnterprise = false
 
@@ -38,9 +38,20 @@ mule.components {
 mule.installPath = '/Users/juancavallotti/mule/mule350'
 
 //configure cloudhub deployment
+/*
 cloudhub.domains {
     jcsupport username: 'myusername', password: 'mypassword'
 }
+*/
+
+repositories {
+    mavenLocal()
+}
+
+muleAgent.environments {
+    test baseUrl: 'http://localhost:9999/mule'
+}
+
 
 //configure MMC
 mmc.environments {
