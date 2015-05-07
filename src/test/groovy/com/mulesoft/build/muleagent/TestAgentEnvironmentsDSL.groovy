@@ -16,6 +16,7 @@
 
 package com.mulesoft.build.muleagent
 
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -102,6 +103,40 @@ class TestAgentEnvironmentsDSL {
         assertTrue('Should only contain two environments', extension.environments.size() == 2)
         assertTrue('Should contain development cluster', extension.environments.containsKey('development'))
         assertTrue('Should contain production cluster', extension.environments.containsKey('production'))
+    }
+
+    @Test
+    void testMixedConfigurationDefinition() {
+        extension.environments {
+
+            development cluster {
+                node1 baseUrl: 'http://10.11.10.11:9999/mule'
+                node2 baseUrl: 'http://10.11.10.12:9999/mule'
+            }
+
+            production cluster {
+                node1 baseUrl: 'http://12.11.10.11:9999/mule'
+                node2 baseUrl: 'http://12.11.10.12:9999/mule'
+            }
+
+            node1 baseUrl: 'http://14.11.10.11:9999/mule'
+
+            defaultEnvironment = 'node1'
+
+        }
+
+
+    }
+
+    @After
+    void assertResultsAreUsable() {
+
+        List<MuleEnvironment> envs = extension.resolveTargetEnvironments()
+
+        //each element in the list should be an environment
+        envs.each {
+            assertTrue(it instanceof MuleEnvironment)
+        }
     }
 
 }

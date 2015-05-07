@@ -40,7 +40,7 @@ class MuleAgentPluginExtension {
      * @param environment the environment configuration
      */
     void addEnvironment(String name, MuleEnvironment environment) {
-        environments[name] = environment
+        environments[name] = [environment]
     }
 
     void environments(Closure<Void> closure) {
