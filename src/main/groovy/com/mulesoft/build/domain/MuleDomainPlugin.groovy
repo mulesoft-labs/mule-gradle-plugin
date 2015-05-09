@@ -102,8 +102,14 @@ class MuleDomainPlugin implements Plugin<Project> {
 
         project.domainZip.dependsOn project.subprojects.tasks['build']
 
-        //we need to trigger the assemble phase upon biuld.
-        project.tasks.create('build').dependsOn project.assemble
+        //we need to trigger the assemble phase upon build.
+        if (project.tasks.findByName('build')) {
+            logger.debug('Found build task, making it dependant on assemble...')
+            project.tasks.getByName('build').dependsOn project.assemble
+        } else {
+            logger.debug('Build task not found, will create a new one...')
+            project.tasks.create('build').dependsOn project.assemble
+        }
 
         //declare the output artifacts
         project.artifacts {
