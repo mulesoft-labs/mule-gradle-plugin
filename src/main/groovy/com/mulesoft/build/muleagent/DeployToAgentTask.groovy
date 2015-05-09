@@ -16,6 +16,7 @@
 
 package com.mulesoft.build.muleagent
 
+import com.mulesoft.build.domain.MuleDomainPlugin
 import com.mulesoft.build.util.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -45,7 +46,9 @@ class DeployToAgentTask extends DefaultTask {
             throw new IllegalStateException('There are no environments configured for deployment.')
         }
 
-        String appName = project.name
+        boolean isDomain = project.plugins.hasPlugin(MuleDomainPlugin)
+
+        String appName = isDomain ? project.mule.resolveDomainName() : project.name
 
         File uploadedFile = project.configurations.archives.allArtifacts.files.singleFile
 
@@ -53,11 +56,14 @@ class DeployToAgentTask extends DefaultTask {
             logger.debug("Will upload file ${uploadedFile.absolutePath}")
         }
 
+
+        String deploymentType = isDomain ? 'domains' : 'applicaitions'
+
         //go through each environment and deploy.
         envs.each { MuleEnvironment env ->
 
 
-            String url = "$env.baseUrl/applications/$appName"
+            String url = "$env.baseUrl/${deploymentType}/$appName"
 
             logger.debug("Will deploy to $url")
 
