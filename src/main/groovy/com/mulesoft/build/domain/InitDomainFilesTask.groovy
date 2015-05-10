@@ -17,6 +17,7 @@ package com.mulesoft.build.domain
 
 import com.mulesoft.build.MulePluginConvention
 import com.mulesoft.build.util.FileUtils
+import com.mulesoft.build.util.GradleProjectUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -36,6 +37,10 @@ class InitDomainFilesTask extends DefaultTask {
 
         File domainDir = project.file(convention.domainSourceDir)
 
+        boolean isLegacy = GradleProjectUtils.isLegacyVersion(project.mule.version)
+
+        String suffix = isLegacy ? '-legacy' : ''
+
         if (domainDir.exists()) {
             logger.warn("Directory ${convention.domainSourceDir} already exists not executing further actions.")
             return
@@ -51,9 +56,9 @@ class InitDomainFilesTask extends DefaultTask {
         InputStream domainStarter;
 
         if (project.mule.muleEnterprise) {
-            domainStarter = getClass().getResourceAsStream('/starters/starters-domain-ee.xml')
+            domainStarter = getClass().getResourceAsStream("/starters/starters-domain-ee${suffix}.xml")
         } else {
-            domainStarter = getClass().getResourceAsStream('/starters/starters-domain-ce.xml')
+            domainStarter = getClass().getResourceAsStream("/starters/starters-domain-ce${suffix}.xml")
         }
 
         //and write it

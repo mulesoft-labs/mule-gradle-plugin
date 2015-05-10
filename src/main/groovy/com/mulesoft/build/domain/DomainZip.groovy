@@ -41,6 +41,7 @@ class DomainZip extends Zip {
             String archiveName = project.mule.resolveDomainName()
             //the zip name of the domain is the name of the project.
             baseName = archiveName
+            version = null
         }
 
             //we'd like to place the results on the build dir.
