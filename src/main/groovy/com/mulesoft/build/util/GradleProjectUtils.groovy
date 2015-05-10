@@ -16,6 +16,7 @@
 
 package com.mulesoft.build.util
 
+import com.mulesoft.build.MulePluginExtension
 import com.mulesoft.build.muleagent.MuleAgentPluginExtension
 
 /**
@@ -30,16 +31,32 @@ class GradleProjectUtils {
      * @return true if it is a legacy version of mule
      */
     static boolean isLegacyVersion(String version) {
-        return false
+        return compareVersions(version, MulePluginExtension.DEFAULT_MULE_VERSION) < 0
     }
 
     /**
      * Convert a version string to an actual version.
-     * @param version
-     * @return
+     * @param version the string representation of the version.
+     * @return a complex type defining the version.
      */
     static MuleVersion stringToVersion(String version) {
+        if (version == null) {
+            return null
+        }
 
+        String[] parts = version.split('\\.')
+
+        MuleVersion ret = new MuleVersion()
+
+        if (parts.length != 3) {
+            throw new IllegalArgumentException('Version string should be in the format of x.x.x where x is any positive integer.')
+        }
+
+        ret.major = parts[0].toInteger()
+        ret.minor = parts[1].toInteger()
+        ret.patch = parts[2].toInteger()
+
+        return ret
     }
 
     /**
@@ -53,6 +70,23 @@ class GradleProjectUtils {
      */
     static int compareVersions(MuleVersion left, MuleVersion right) {
 
+        if (left == null || right == null) {
+            throw new IllegalArgumentException('Versions must not be null.')
+        }
+
+        int partial = left.major - right.major
+
+        if (partial != 0) {
+            return  partial
+        }
+
+        partial = left.minor - right.minor
+
+        if (partial != 0) {
+            return partial
+        }
+
+        return left.patch - right.patch
     }
 
     /**

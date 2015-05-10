@@ -25,10 +25,12 @@ class MulePluginExtension {
     private static String DEFAULT_MODULE_GROUP = 'org.mule.modules'
     private static String DEFAULT_CONNECTOR_GROUP = 'org.mule.modules'
 
+    static String DEFAULT_MULE_VERSION = '3.6.0'
+
     /**
      * The mule version against we want to build.
      */
-    String version = '3.6.0'
+    String version = DEFAULT_MULE_VERSION
 
     /**
      * The standalone path.
