@@ -18,6 +18,7 @@ package com.mulesoft.build
 import com.mulesoft.build.domain.MuleDomainPlugin
 import com.mulesoft.build.studio.StudioPlugin
 import com.mulesoft.build.util.FileUtils
+import com.mulesoft.build.util.GradleProjectUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.JavaPluginConvention
@@ -64,14 +65,23 @@ class InitProjectTask extends DefaultTask {
 
     void copyInitialFiles() {
 
+        String version = project.mule.version
+
+        boolean legacy = GradleProjectUtils.isLegacyVersion(version)
 
 
         InputStream contents = null
         String filename = null
 
-        //log4j
-        filename = 'src/main/resources/log4j.properties'
-        contents = getClass().getResourceAsStream('/starters/starters-log4j.properties')
+        if (legacy) {
+            //legacy projects use log4j.properties
+            filename = 'src/main/resources/log4j.properties'
+            contents = getClass().getResourceAsStream('/starters/starters-log4j.properties')
+        } else {
+            //use log4j2.xml
+            filename = 'src/main/resources/log4j2.xml'
+            contents = getClass().getResourceAsStream('/starters/starters-log4j2.xml')
+        }
 
         writeFile(filename, contents)
 
@@ -87,10 +97,13 @@ class InitProjectTask extends DefaultTask {
 
         saveDeployProperties(filename, contents)
 
-        //mule app configuration
         filename = 'src/main/app/mule-config.xml'
-        contents = getClass().getResourceAsStream('/starters/starters-mule-config.xml')
-
+        if (legacy) {
+            //mule app configuration
+            contents = getClass().getResourceAsStream('/starters/starters-mule-config-legacy.xml')
+        } else {
+            contents = getClass().getResourceAsStream('/starters/starters-mule-config.xml')
+        }
         writeFile(filename, contents)
 
     }
