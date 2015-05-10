@@ -28,7 +28,7 @@ class MulePluginExtension {
     /**
      * The mule version against we want to build.
      */
-    String version = '3.4.0'
+    String version = '3.6.0'
 
     /**
      * The standalone path.
