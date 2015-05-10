@@ -115,6 +115,11 @@ class MuleDependencyPlugin implements Plugin<Project> {
                 url 'http://dist.codehaus.org/mule/dependencies/maven2/'
             }
 
+            //xquery api
+            maven {
+                url 'http://xqj.net/maven/'
+            }
+
             if (proj.mule.muleEnterprise) {
 
                 if (proj.mule.enterpriseRepoUsername.length() == 0) {
