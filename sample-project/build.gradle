@@ -41,13 +41,9 @@ cloudhub.domains {
 }
 
 
-repositories {
-    mavenLocal()
-}
-
-muleAgent.environments {
-    test baseUrl: 'http://localhost:9999/mule'
-}
+//muleAgent.environments {
+//    test baseUrl: 'http://localhost:9999/mule'
+//}
 
 
 //configure MMC
