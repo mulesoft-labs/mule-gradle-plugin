@@ -58,12 +58,14 @@ class TestDomainOperations {
         proj.mule.domainName = newDomainName
         proj.mule.muleEnterprise = false
 
+        proj.version = '1.0.0'
+
         proj.evaluate()
 
 
-        String result = proj.domainZip.baseName
+        String result = proj.domainZip.archiveName
 
-        assertEquals('Zip file name should be the new one', newDomainName, result)
+        assertEquals('Zip file name should be the new one', newDomainName + '.zip', result)
     }
 
 }
