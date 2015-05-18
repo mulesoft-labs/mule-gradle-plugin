@@ -110,6 +110,11 @@ class MuleDependencyPlugin implements Plugin<Project> {
                 url 'http://repository.mulesoft.org/releases/'
             }
 
+            //this replaces the codehaus repository.
+            maven {
+                url 'https://repository.mulesoft.org/nexus/content/repositories/public'
+            }
+
             //xquery api
             maven {
                 url 'http://xqj.net/maven/'

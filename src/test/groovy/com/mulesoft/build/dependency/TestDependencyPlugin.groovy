@@ -38,7 +38,7 @@ class TestDependencyPlugin {
         p.mule.enterpriseRepoPassword = 'bbbb'
         p.evaluate()
 
-        assertEquals('Project should have default repos', 4, p.repositories.size())
+        assertEquals('Project should have default repos', 5, p.repositories.size())
 
     }
 
