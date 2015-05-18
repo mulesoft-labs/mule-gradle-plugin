@@ -110,10 +110,6 @@ class MuleDependencyPlugin implements Plugin<Project> {
                 url 'http://repository.mulesoft.org/releases/'
             }
 
-            //mule build dependencies.
-            maven {
-                url 'http://dist.codehaus.org/mule/dependencies/maven2/'
-            }
 
             if (proj.mule.muleEnterprise) {
 
