@@ -294,7 +294,7 @@ The build can be configured to deploy the resulting artifact on a mule standalon
 
 Alternatively it can be configured through the MULE_HOME environment variable. Finally to deploy:
 
-    $ gradle install
+    $ gradle deployLocally
 
 Mule Embedded in Java Apps
 ----
