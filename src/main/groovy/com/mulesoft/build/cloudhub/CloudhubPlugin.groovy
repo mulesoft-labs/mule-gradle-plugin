@@ -40,11 +40,13 @@ class CloudhubPlugin implements Plugin<Project> {
 
 
         Task upload = project.tasks.create('deploy', UploadToCloudhubTask);
-
         upload.description = 'Deploy the application in the selected cloudhub environment.'
         upload.group = MulePluginConstants.MULE_GROUP
-
         upload.dependsOn project.build
 
+        Task deployCH = project.tasks.create('deployCloudhub', DeployToCloudhubTask)
+        deployCH.description = 'Deploy the application in the selected cloudhub environment.'
+        deployCH.group = MulePluginConstants.MULE_GROUP
+        upload.dependsOn project.build
     }
 }
