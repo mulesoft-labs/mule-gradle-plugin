@@ -57,7 +57,7 @@ class DeployToAgentTask extends DefaultTask {
         }
 
 
-        String deploymentType = isDomain ? 'domains' : 'applicaitions'
+        String deploymentType = isDomain ? 'domains' : 'applications'
 
         //go through each environment and deploy.
         envs.each { MuleEnvironment env ->
