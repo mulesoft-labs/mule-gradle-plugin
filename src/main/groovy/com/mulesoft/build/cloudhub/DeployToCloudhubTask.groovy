@@ -1,9 +1,9 @@
 package com.mulesoft.build.cloudhub
 
-import groovyx.net.http.HTTPBuilder
 import org.gradle.api.GradleException
-
-import static groovyx.net.http.ContentType.BINARY
+import wslite.http.auth.HTTPBasicAuthorization
+import wslite.rest.RESTClient
+import wslite.rest.RESTClientException
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -38,19 +38,28 @@ class DeployToCloudhubTask extends DefaultTask{
             throw GradleException("Multiple cloudhub domains found but none selected as default: ${ext.domains.keySet()}")
         }
 
-        //display the environment that will be used.
-        if (logger.isInfoEnabled()) {
-            logger.info "About to deploy to environment $env"
-        }
+        logger.info "About to deploy to environment $env"
 
         File uploadedFile = project.configurations.archives.allArtifacts.files.singleFile
 
-        def service = new HTTPBuilder(baseUrl)
+        try {
 
-        service.auth.basic(env.username, env.password)
+            def client = new RESTClient(baseUrl)
+            logger.debug "baseUrl: ${baseUrl}"
 
-        service.post(path:"/applications/$env.domainName/deploy", body: uploadedFile.bytes, requestContentType: BINARY) { response ->
-            logger.info response.responseLine
+            client.authorization = new HTTPBasicAuthorization(env.username, env.password)
+
+            logger.lifecycle "Deploying application to ${env.domainName}"
+            def response = client.post(path: "/applications/${env.domainName}/deploy") {
+                type 'application/octet-stream'
+                bytes uploadedFile.bytes
+            }
+
+            logger.lifecycle "Response status code: ${response.statusCode}"
+            logger.lifecycle "Response message: ${response.statusMessage}"
+
+        } catch (RESTClientException e) {
+            throw GradleException(e.message, e)
         }
     }
 }
