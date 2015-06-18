@@ -45,11 +45,17 @@ class MuleAgentPlugin implements Plugin<Project> {
         }
 
         //register the plugin
-        Task t =  project.tasks.create('deploy', DeployToAgentTask)
+        Task agentDeployTask =  project.tasks.create('muleAgentDeploy', DeployToAgentTask)
 
-        t.description = 'Deploy the resulting application to Mule through the Mule Agent'
-        t.group = MulePluginConstants.MULE_GROUP
+        if (project.tasks.findByName('deploy')) {
+            project.deploy.dependsOn agentDeployTask
+        } else {
+            logger.error('Project does not contain the \'deploy\' task, you must apply the \'mule\' plugin!!')
+        }
 
-        t.dependsOn project.build
+        agentDeployTask.description = 'Deploy the resulting application to Mule through the Mule Agent'
+        agentDeployTask.group = MulePluginConstants.MULE_GROUP
+
+        agentDeployTask.dependsOn project.build
     }
 }

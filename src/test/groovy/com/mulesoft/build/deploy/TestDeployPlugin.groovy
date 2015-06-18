@@ -66,4 +66,14 @@ class TestDeployPlugin {
         }
     }
 
+    @Test
+    void checkLocalDeploymentTaskName() {
+        Project p = ProjectBuilder.builder().withName('test-project').build()
+        p.apply plugin: MulePlugin
+
+        p.evaluate()
+
+        //assert
+        assertNotNull('should have a deployLocally task', p.tasks.findByName('deployLocally'))
+    }
 }

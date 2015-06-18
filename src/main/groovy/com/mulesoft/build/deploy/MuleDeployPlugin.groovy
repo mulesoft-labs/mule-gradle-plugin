@@ -31,28 +31,41 @@ class MuleDeployPlugin implements Plugin<Project> {
 
     private static final Logger logger = LoggerFactory.getLogger(MuleDeployPlugin)
 
+    public static final String DEPLOY_TASK_DESC = 'Perform any Mule-related deployment operations.'
+
     @Override
     public void apply(Project project) {
 
+        //define the global deploy task
+        final Task deployTask = project.tasks.create('deploy')
+        deployTask.dependsOn 'build'
+        deployTask.description = DEPLOY_TASK_DESC
+        deployTask.group = MulePluginConstants.MULE_GROUP
+
+
         project.afterEvaluate { proj ->
-            //define the task
 
             //NOTE: Originally this task was called install but given this conflicts with
             //the maven plugin and it is not really self-explicative, it will get renamed.
             //SEE: https://github.com/mulesoft-labs/mule-gradle-plugin/issues/26
-            Task task = proj.tasks.create('deployLocally', InstallInRuntime)
+            Task deployLocallytask = proj.tasks.create('deployLocally', InstallInRuntime)
 
             Task findRuntime = proj.tasks.create('configureInstall') << {
                 //do this as soon as we have the effective config.
-                task.doInstallInRuntime()
+                deployLocallytask.doInstallInRuntime()
             }
 
             //we need to configure the task before.
-            task.dependsOn findRuntime
+            deployLocallytask.dependsOn findRuntime
             //depends on the generic build
-            task.dependsOn 'build'
-            task.description = InstallInRuntime.TASK_DESC;
-            task.group = MulePluginConstants.MULE_GROUP
+            deployLocallytask.dependsOn 'build'
+            deployLocallytask.description = InstallInRuntime.TASK_DESC;
+            deployLocallytask.group = MulePluginConstants.MULE_GROUP
+
+
+            //global deploy task should depend on deployLocally
+            //so when called deploy, deploy locally is performed
+            deployTask.dependsOn deployLocallytask
         }
     }
 }

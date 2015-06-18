@@ -50,4 +50,20 @@ class TestMulePlugin {
         assertThat('Test task should depend on unpack plugins', test.dependsOn, hasItem(unpackTask))
     }
 
+
+    @Test
+    public void verifyDeploymentTask() {
+
+        Project p = ProjectBuilder.builder().withName('test-project').build()
+
+
+        //we need to apply the mule plugin
+        p.apply plugin: MulePlugin
+
+        p.evaluate()
+
+        //at this point we should have a deploy task.
+        assertNotNull('Should have a deploy task', p.tasks.findByName('deploy'))
+    }
+
 }

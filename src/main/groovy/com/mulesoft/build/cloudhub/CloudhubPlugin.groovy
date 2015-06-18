@@ -45,7 +45,13 @@ class CloudhubPlugin implements Plugin<Project> {
         }
 
 
-        Task upload = project.tasks.create('deploy', UploadToCloudhubTask);
+        Task upload = project.tasks.create('cloudhubDeploy', UploadToCloudhubTask);
+
+        if (project.tasks.findByName('deploy')) {
+            project.deploy.dependsOn upload
+        } else {
+            logger.error('Project does not contain the \'deploy\' task, you must apply the \'mule\' plugin!!')
+        }
 
         upload.description = 'Deploy the application in the selected cloudhub environment.'
         upload.group = MulePluginConstants.MULE_GROUP
