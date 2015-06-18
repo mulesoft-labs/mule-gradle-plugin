@@ -30,6 +30,8 @@ class CloudhubPlugin implements Plugin<Project> {
 
     public static final Logger logger = LoggerFactory.getLogger(CloudhubPlugin)
 
+    public static final String FORCE_ENVIRONMENT_PROPERTY = 'cloudhubEnvironment'
+
     @Override
     void apply(Project project) {
 
@@ -37,6 +39,10 @@ class CloudhubPlugin implements Plugin<Project> {
 
         project.extensions.create('cloudhub', CloudhubPluginExtension)
         project.convention.create('cloudhubConvention', CloudhubPluginConvention)
+
+        if (project.hasProperty(FORCE_ENVIRONMENT_PROPERTY)) {
+            project.cloudhub.forceDomain = project.property(FORCE_ENVIRONMENT_PROPERTY)
+        }
 
 
         Task upload = project.tasks.create('deploy', UploadToCloudhubTask);

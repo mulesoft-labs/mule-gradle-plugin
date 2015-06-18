@@ -15,6 +15,9 @@
  */
 package com.mulesoft.build.cloudhub
 
+import com.mulesoft.build.MulePlugin
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -72,4 +75,33 @@ class TestDomainsDSL {
         assertNotNull('Domain should have been resolved when default is configured', env)
         assertSame('Resolved domain should be the configured one', extension.domains[extension.defaultDomain], env)
     }
+
+    @Test
+    void testExternalEnvironment() {
+
+        Project p = ProjectBuilder.builder().withName('testProject').build()
+
+        p.setProperty(CloudhubPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
+
+        //configure the project
+        p.apply plugin: MulePlugin
+        p.apply plugin: CloudhubPlugin
+
+        //configure a couple of environments
+        p.cloudhub.domains {
+            dev username: 'a', password: 'b'
+            prod username: 'c', password: 'd'
+
+            defaultDomain = 'prod'
+        }
+
+        p.evaluate()
+
+
+        def env = p.cloudhub.resolveTargetDomain()
+
+        assertNotNull('Domain should have been resolved since there is configuration', env)
+        assertSame('Resolved domain should be the configured by external property', p.cloudhub.domains['dev'], env)
+    }
+
 }

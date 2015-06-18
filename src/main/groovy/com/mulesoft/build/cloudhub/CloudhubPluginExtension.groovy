@@ -34,6 +34,11 @@ class CloudhubPluginExtension {
     String defaultDomain = null
 
     /**
+     * The domain that, if configured will be forced upon resolution.
+     */
+    String forceDomain = null
+
+    /**
      * Add a domain with the given name to the domains.
      * @param name the name of the environment
      * @param environment the environment configuration
@@ -65,6 +70,11 @@ class CloudhubPluginExtension {
         if (domains.isEmpty()) {
             return null
         }
+
+        if (forceDomain != null) {
+            return domains[forceDomain]
+        }
+
 
         if (defaultDomain != null) {
 
