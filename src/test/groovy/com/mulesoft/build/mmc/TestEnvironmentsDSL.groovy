@@ -15,6 +15,9 @@
  */
 package com.mulesoft.build.mmc
 
+import com.mulesoft.build.MulePlugin
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 import static org.junit.Assert.*
 
@@ -74,4 +77,34 @@ class TestEnvironmentsDSL {
 
         assertSame('Resolved environment should be the configured one', extension.environments['prod'], env)
     }
+
+
+    @Test
+    void testExternalEnvironment() {
+
+        Project p = ProjectBuilder.builder().withName('testProject').build()
+
+        p.setProperty(MMCPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
+
+        //configure the project
+        p.apply plugin: MulePlugin
+        p.apply plugin: MMCPlugin
+
+        //configure a couple of environments
+        p.mmc.environments {
+            dev url: 'http://localhost:8081/mmc', username: 'test', password: 'testpw'
+            prod url: 'http://localhost:8082/mmc', username: 'prod', password: 'prodpw'
+
+            defaultEnvironment = 'prod'
+        }
+
+        p.evaluate()
+
+
+        def env = p.mmc.resolveTargetEnvironment()
+
+        assertNotNull('Environment should have been resolved since there is configuration', env)
+        assertSame('Resolved environment should be the configured by external property', p.mmc.environments['dev'], env)
+    }
+
 }

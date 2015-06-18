@@ -30,6 +30,8 @@ class MMCPlugin implements Plugin<Project> {
 
     private static final Logger logger = LoggerFactory.getLogger(MMCPlugin)
 
+    public static final String FORCE_ENVIRONMENT_PROPERTY = 'mmcEnvironment'
+
     @Override
     void apply(Project project) {
 
@@ -38,6 +40,9 @@ class MMCPlugin implements Plugin<Project> {
         //create the MMC plugin extension.
         project.extensions.create('mmc', MMCPluginExtension)
 
+        if (project.hasProperty(FORCE_ENVIRONMENT_PROPERTY)) {
+            project.mmc.forceEnvironment = project.property(FORCE_ENVIRONMENT_PROPERTY)
+        }
 
         //register the plugin
         Task t =  project.tasks.create('uploadToRepository', DeployToMMCTask)
