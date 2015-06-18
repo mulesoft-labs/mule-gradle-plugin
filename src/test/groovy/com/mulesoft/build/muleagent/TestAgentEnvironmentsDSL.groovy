@@ -137,7 +137,7 @@ class TestAgentEnvironmentsDSL {
 
         Project p = ProjectBuilder.builder().withName('testProject').build()
 
-        p.setProperty(MuleAgentPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
+        p.ext.setProperty(MuleAgentPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
 
         //configure the project
         p.apply plugin: MulePlugin

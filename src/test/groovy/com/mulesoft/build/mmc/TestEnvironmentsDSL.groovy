@@ -84,7 +84,7 @@ class TestEnvironmentsDSL {
 
         Project p = ProjectBuilder.builder().withName('testProject').build()
 
-        p.setProperty(MMCPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
+        p.ext.setProperty(MMCPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
 
         //configure the project
         p.apply plugin: MulePlugin

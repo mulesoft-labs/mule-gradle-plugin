@@ -81,7 +81,7 @@ class TestDomainsDSL {
 
         Project p = ProjectBuilder.builder().withName('testProject').build()
 
-        p.setProperty(CloudhubPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
+        p.ext.setProperty(CloudhubPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
 
         //configure the project
         p.apply plugin: MulePlugin
