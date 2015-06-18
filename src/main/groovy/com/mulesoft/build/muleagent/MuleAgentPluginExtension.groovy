@@ -35,6 +35,12 @@ class MuleAgentPluginExtension {
     String defaultEnvironment = null
 
     /**
+     * The environment to pick. This forces the resolution of environment to the one specified by this property.
+     * This property takes precedence over any other configuration.
+     */
+    String forceEnvironment = null;
+
+    /**
      * Add an environment with the given name to the deployments.
      * @param name the name of the environment
      * @param environment the environment configuration
@@ -85,6 +91,10 @@ class MuleAgentPluginExtension {
     List<MuleEnvironment> resolveTargetEnvironments() {
         if (environments.isEmpty()) {
             return []
+        }
+
+        if (forceEnvironment != null) {
+            return environments[forceEnvironment]
         }
 
         if (defaultEnvironment != null) {

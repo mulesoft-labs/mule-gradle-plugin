@@ -16,6 +16,9 @@
 
 package com.mulesoft.build.muleagent
 
+import com.mulesoft.build.MulePlugin
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -127,6 +130,36 @@ class TestAgentEnvironmentsDSL {
 
 
     }
+
+
+    @Test
+    void testExternalEnvironment() {
+
+        Project p = ProjectBuilder.builder().withName('testProject').build()
+
+        p.setProperty(MuleAgentPlugin.FORCE_ENVIRONMENT_PROPERTY, 'dev')
+
+        //configure the project
+        p.apply plugin: MulePlugin
+        p.apply plugin: MuleAgentPlugin
+
+        //configure a couple of environments
+        p.muleAgent.environments {
+            dev baseUrl: 'http://14.11.10.11:9999/mule'
+            prod baseUrl: 'http://14.11.10.12:9999/mule'
+
+            defaultEnvironment = 'prod'
+        }
+
+        p.evaluate()
+
+
+        def env = p.muleAgent.resolveTargetEnvironments()
+
+        assertNotNull('Environment should have been resolved since there is configuration', env)
+        assertSame('Resolved environment should be the configured by external property', p.muleAgent.environments['dev'], env)
+    }
+
 
     @After
     void assertResultsAreUsable() {

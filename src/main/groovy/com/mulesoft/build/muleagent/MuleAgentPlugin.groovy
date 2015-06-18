@@ -31,6 +31,7 @@ class MuleAgentPlugin implements Plugin<Project> {
 
     private static final Logger logger = LoggerFactory.getLogger(MuleAgentPlugin)
 
+    public static final String FORCE_ENVIRONMENT_PROPERTY = 'muleAgentEnvironment'
 
     @Override
     void apply(Project project) {
@@ -39,6 +40,9 @@ class MuleAgentPlugin implements Plugin<Project> {
         //create the Mule Agent plugin extension.
         project.extensions.create('muleAgent', MuleAgentPluginExtension)
 
+        if (project.hasProperty(FORCE_ENVIRONMENT_PROPERTY)) {
+            project.muleAgent.forceEnvironment = project.property(FORCE_ENVIRONMENT_PROPERTY)
+        }
 
         //register the plugin
         Task t =  project.tasks.create('deploy', DeployToAgentTask)
