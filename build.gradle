@@ -14,6 +14,15 @@ apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 
+group = 'org.mulesoft.build'
+version = '2.0.0-SNAPSHOT'
+
+//configure the wrapper task to point to the minimum gradle version.
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
@@ -49,9 +58,6 @@ publishing {
 
 //force test run on every build
 project.check.dependsOn(project.test)
-
-group = 'org.mulesoft.build'
-version = '2.0.0-SNAPSHOT'
 
 //for publishing in gradle's plugin site.
 pluginBundle {
