@@ -6,6 +6,7 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
 - [Gradle Plugin for Building Mule Apps](#gradle-plugin-for-building-mule-apps)
+  - [Compatibility](#compatibility)
   - [Install the plugin locally](#install-the-plugin-locally)
   - [Enabling your project to build through the Command Line](#enabling-your-project-to-build-through-the-command-line)
   - [Start a new Project](#start-a-new-project)
@@ -31,7 +32,11 @@ Gradle Plugin for Building Mule Apps
 
 This plugin allows the user to build mule applications with the gradle build system.
 
-**Important Note: Starting from published version 1.1.0, the plugin supports both gradle 1.x and 2.x.**
+Compatibility
+----
+
+Please see our [compatibility matrix](https://github.com/mulesoft-labs/mule-gradle-plugin/wiki/Versions-Compatibility-Matrix) to understand
+which version of the gradle plugin to use.
 
 Install the plugin locally
 ----
