@@ -75,6 +75,12 @@ pluginBundle {
             id = 'com.mulesoft.mulestudio'
             displayName = 'Plugin for Building MuleESB Apps and integrated with Anypoint Studio.'
         }
+
+        studioDomain {
+            id = 'com.mulesoft.studio-domain'
+            displayName = 'Plugin for Building MuleESB Shared domain Apps integrated with Anypoint Studio.'
+        }
+
         dependencies {
             id = 'com.mulesoft.mule-dependencies'
             displayName = 'Plugin for Building Embedded MuleESB Apps.'
