@@ -132,6 +132,7 @@ class StudioDomainPlugin implements Plugin<Project> {
         eclipseClasspath.classpath = model.classpath
         eclipseClasspath.classpath.containers 'org.eclipse.jdt.launching.JRE_CONTAINER'
         eclipseClasspath.classpath.file = new XmlFileContentMerger(eclipseClasspath.xmlTransformer)
+        eclipseClasspath.classpath.plusConfigurations = [project.configurations.testCompile]
 
         //define the two source sets that are interesting to us.
         DefaultSourceSet dss = new DefaultSourceSet('main', project.fileResolver)
