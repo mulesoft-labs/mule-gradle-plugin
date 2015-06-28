@@ -74,10 +74,13 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
                     'spring-config',
                     'client',
                     'cxf',
+                    'db',
+                    'http',
                     'json',
                     'management',
                     'scripting',
                     'sxc',
+                    'ws',
                     'xml'
             ])
             logger.debug("Modules enabled: ${mule.modules}")
@@ -88,7 +91,6 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
             mule.transports.addAll([
                     'file',
                     'http',
-                    'jdbc',
                     'jms',
                     'vm'
             ])
@@ -100,7 +102,8 @@ class MuleProjectDependenciesConfigurer implements DependenciesConfigurer {
             mule.eeModules.addAll([
                     'spring-config-ee',
                     'data-mapper',
-                    'boot-ee'
+                    'boot-ee',
+                    'batch-ee'
             ])
 
             logger.debug("Enterprise modules enabled: ${mule.modules}")
