@@ -38,6 +38,8 @@ class MuleDomainPlugin implements Plugin<Project> {
 
     private static final Logger logger = LoggerFactory.getLogger(MuleDomainPlugin)
 
+    public static final String DOMAIN_CONVENTION_NAME = 'muleDomainConvention'
+
     @Override
     void apply(Project project) {
 
@@ -53,7 +55,12 @@ class MuleDomainPlugin implements Plugin<Project> {
         project.apply plugin: MuleDeployPlugin
 
 
-        //add the mule plugin convention.
+        //create the convention specific for domains if is not present.
+        if (!project.convention.findByName(DOMAIN_CONVENTION_NAME)) {
+            project.convention.create(DOMAIN_CONVENTION_NAME, MuleDomainPluginConvention)
+        }
+
+        //add the mule plugin convention, this is only used for convenience, design can be improved here.
         project.convention.create('muleConvention', MulePluginConvention)
 
         //add the runtime configurations
@@ -83,13 +90,15 @@ class MuleDomainPlugin implements Plugin<Project> {
         //mule studio could be applied by the user later, but we might consider making it default.
         project.subprojects {
 
+            MuleDomainPluginConvention conv = project.convention.findByName(DOMAIN_CONVENTION_NAME)
+
             def spmule = new MuleDomainModulePluginExtension(parent: project.mule)
 
             //configure the plugin extension on the mule project.
             extensions.add('mule', spmule)
 
             //apply the mule plugin to the subproject
-            apply plugin: 'mule'
+            apply plugin: conv.subprojectsPlugin
 
             //change the outputs of the task so it checks correctly if it is up-to-date
             mulezip.outputs.dir project.buildDir

@@ -68,4 +68,37 @@ class TestDomainOperations {
         assertEquals('Zip file name should be the new one', newDomainName + '.zip', result)
     }
 
+    @Test
+    public void testCreatePluginConvention() {
+        Project p = ProjectBuilder.builder().withName('mule-domain').build()
+
+        p.apply(plugin: MuleDomainPlugin)
+        p.mule.muleEnterprise = false
+
+        p.evaluate()
+
+        //check that project contains the mule domain convention
+        MuleDomainPluginConvention convention = p.convention.findByName(MuleDomainPlugin.DOMAIN_CONVENTION_NAME)
+
+        assertNotNull('Should have a domain convention', convention)
+    }
+
+    @Test
+    public void testExistingPluginConvention() {
+        Project p = ProjectBuilder.builder().withName('mule-domain').build()
+
+        MuleDomainPluginConvention existingConvention = p.convention.create(MuleDomainPlugin.DOMAIN_CONVENTION_NAME, MuleDomainPluginConvention)
+
+        p.apply(plugin: MuleDomainPlugin)
+        p.mule.muleEnterprise = false
+
+        p.evaluate()
+
+        //check that project contains the mule domain convention
+        MuleDomainPluginConvention convention = p.convention.findByName(MuleDomainPlugin.DOMAIN_CONVENTION_NAME)
+
+        assertNotNull('Should have a domain convention', convention)
+        assertSame('Conventions must be the same', existingConvention, convention)
+    }
+
 }
