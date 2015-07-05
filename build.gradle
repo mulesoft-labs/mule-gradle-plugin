@@ -72,7 +72,7 @@ pluginBundle {
             displayName = 'Plugin for Building MuleESB Apps.'
         }
         mulestudio {
-            id = 'com.mulesoft.mulestudio'
+            id = 'com.mulesoft.studio'
             displayName = 'Plugin for Building MuleESB Apps and integrated with Anypoint Studio.'
         }
 
