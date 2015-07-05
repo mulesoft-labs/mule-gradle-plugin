@@ -38,7 +38,7 @@ class MuleAgentPlugin implements Plugin<Project> {
         logger.debug('Apply the Mule Agent plugin')
 
         //create the Mule Agent plugin extension.
-        project.extensions.create('muleAgent', MuleAgentPluginExtension)
+        def agentExt = project.extensions.create('muleAgent', MuleAgentPluginExtension)
 
         if (project.hasProperty(FORCE_ENVIRONMENT_PROPERTY)) {
             project.muleAgent.forceEnvironment = project.property(FORCE_ENVIRONMENT_PROPERTY)
@@ -51,6 +51,13 @@ class MuleAgentPlugin implements Plugin<Project> {
             project.deploy.dependsOn agentDeployTask
         } else {
             logger.error('Project does not contain the \'deploy\' task, you must apply the \'mule\' plugin!!')
+        }
+
+        //contribute to the DSL as an extension.
+        if (project.hasProperty('mule')) {
+            project.mule.ext.agent = agentExt.&environments
+        } else {
+            logger.warn('Could not find mule plugin extension, mule plugin might not be applied.')
         }
 
         agentDeployTask.description = 'Deploy the resulting application to Mule through the Mule Agent'

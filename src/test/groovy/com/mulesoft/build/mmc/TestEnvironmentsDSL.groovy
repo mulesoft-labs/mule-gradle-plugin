@@ -107,4 +107,25 @@ class TestEnvironmentsDSL {
         assertSame('Resolved environment should be the configured by external property', p.mmc.environments['dev'], env)
     }
 
+    @Test
+    void testMMCDslContribution() {
+
+        Project p = ProjectBuilder.builder().withName('testProject').build()
+
+        p.apply plugin: MulePlugin
+        p.apply plugin: MMCPlugin
+
+        p.mule {
+            mmc {
+                dev url: 'http://localhost:8081/mmc', username: 'test', password: 'testpw'
+                defaultEnvironment = 'dev'
+            }
+        }
+
+        p.evaluate()
+
+        assertNotNull('Should have the dev environment', p.mmc.environments['dev'])
+        assertEquals('Should have a default environment set', 'dev', p.mmc.defaultEnvironment)
+    }
+
 }

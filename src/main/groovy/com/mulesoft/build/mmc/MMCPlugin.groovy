@@ -37,11 +37,20 @@ class MMCPlugin implements Plugin<Project> {
 
         logger.debug('Apply the MMC plugin')
 
+
         //create the MMC plugin extension.
-        project.extensions.create('mmc', MMCPluginExtension)
+        def mmcExt = project.extensions.create('mmc', MMCPluginExtension)
 
         if (project.hasProperty(FORCE_ENVIRONMENT_PROPERTY)) {
+            logger.debug("Environment will be forced to: ${project.property(FORCE_ENVIRONMENT_PROPERTY)}")
             project.mmc.forceEnvironment = project.property(FORCE_ENVIRONMENT_PROPERTY)
+        }
+
+        //contribute to the DSL as an extension.
+        if (project.hasProperty('mule')) {
+            project.mule.ext.mmc = mmcExt.&environments
+        } else {
+            logger.warn('Could not find mule plugin extension, mule plugin might not be applied.')
         }
 
         //register the plugin

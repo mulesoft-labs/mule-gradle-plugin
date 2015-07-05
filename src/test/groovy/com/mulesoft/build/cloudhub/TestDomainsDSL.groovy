@@ -104,4 +104,25 @@ class TestDomainsDSL {
         assertSame('Resolved domain should be the configured by external property', p.cloudhub.domains['dev'], env)
     }
 
+    @Test
+    void testCloudhubDslContribution() {
+
+        Project p = ProjectBuilder.builder().withName('testProject').build()
+
+        p.apply plugin: MulePlugin
+        p.apply plugin: CloudhubPlugin
+
+        p.mule {
+            cloudhub {
+                dev username: 'c', password: 'd'
+                defaultDomain = 'dev'
+            }
+        }
+
+        p.evaluate()
+
+        assertNotNull('Should have the dev domain', p.cloudhub.domains['dev'])
+        assertEquals('Should have a default environment set', 'dev', p.cloudhub.defaultDomain)
+    }
+
 }

@@ -37,7 +37,7 @@ class CloudhubPlugin implements Plugin<Project> {
 
         logger.debug('Applying the CloudHub plugin')
 
-        project.extensions.create('cloudhub', CloudhubPluginExtension)
+        def cloudhubExt = project.extensions.create('cloudhub', CloudhubPluginExtension)
         project.convention.create('cloudhubConvention', CloudhubPluginConvention)
 
         if (project.hasProperty(FORCE_ENVIRONMENT_PROPERTY)) {
@@ -51,6 +51,13 @@ class CloudhubPlugin implements Plugin<Project> {
             project.deploy.dependsOn upload
         } else {
             logger.error('Project does not contain the \'deploy\' task, you must apply the \'mule\' plugin!!')
+        }
+
+        //contribute to the DSL as an extension.
+        if (project.hasProperty('mule')) {
+            project.mule.ext.cloudhub = cloudhubExt.&domains
+        } else {
+            logger.warn('Could not find mule plugin extension, mule plugin might not be applied.')
         }
 
         upload.description = 'Deploy the application in the selected cloudhub environment.'

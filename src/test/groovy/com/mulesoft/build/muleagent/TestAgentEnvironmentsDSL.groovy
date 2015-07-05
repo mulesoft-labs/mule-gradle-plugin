@@ -172,4 +172,36 @@ class TestAgentEnvironmentsDSL {
         }
     }
 
+    @Test
+    void testAgentDslContribution() {
+
+        Project p = ProjectBuilder.builder().withName('testProject').build()
+
+        p.apply plugin: MulePlugin
+        p.apply plugin: MuleAgentPlugin
+
+        p.mule {
+            agent {
+                development cluster {
+                    node1 baseUrl: 'http://10.11.10.11:9999/mule'
+                    node2 baseUrl: 'http://10.11.10.12:9999/mule'
+                }
+
+                production cluster {
+                    node1 baseUrl: 'http://12.11.10.11:9999/mule'
+                    node2 baseUrl: 'http://12.11.10.12:9999/mule'
+                }
+
+                node1 baseUrl: 'http://14.11.10.11:9999/mule'
+
+                defaultEnvironment = 'node1'
+            }
+        }
+
+        p.evaluate()
+
+        assertNotNull('Should have the development environment', p.muleAgent.environments['development'])
+        assertEquals('Should have a default environment set', 'node1', p.muleAgent.defaultEnvironment)
+    }
+
 }
