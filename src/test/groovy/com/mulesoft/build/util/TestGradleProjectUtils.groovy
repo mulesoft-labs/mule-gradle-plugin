@@ -16,6 +16,10 @@
 
 package com.mulesoft.build.util
 
+import com.mulesoft.build.MulePlugin
+import com.mulesoft.build.domain.MuleDomainPlugin
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -90,5 +94,44 @@ class TestGradleProjectUtils {
         boolean result = GradleProjectUtils.isLegacyVersion(legacy)
 
         assertTrue('Version should be legacy', result)
+    }
+
+
+    @Test
+    void testDetectDomainParent() {
+
+        Project parent = ProjectBuilder.builder().withName('parent').build()
+        Project child = ProjectBuilder.builder().withName('child').withParent(parent).build()
+
+        parent.apply plugin: MuleDomainPlugin
+
+        boolean result = GradleProjectUtils.hasDomainParent(child)
+
+        assertTrue('Parent project has domain plugin applied', result)
+    }
+
+    @Test
+    void testDetectNonDomainParent() {
+
+        Project parent = ProjectBuilder.builder().withName('parent').build()
+        Project child = ProjectBuilder.builder().withName('child').withParent(parent).build()
+
+        child.apply plugin: MulePlugin
+
+        boolean result = GradleProjectUtils.hasDomainParent(child)
+
+        assertFalse('Parent project does not have domain plugin applied', result)
+    }
+
+    @Test
+    void testDetectDomainNoParent() {
+
+        Project child = ProjectBuilder.builder().withName('child').build()
+
+        child.apply plugin: MulePlugin
+
+        boolean result = GradleProjectUtils.hasDomainParent(child)
+
+        assertFalse('Parent project does not have domain plugin applied', result)
     }
 }

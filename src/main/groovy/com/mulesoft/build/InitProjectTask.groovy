@@ -68,7 +68,7 @@ class InitProjectTask extends DefaultTask {
         String version = project.mule.version
 
         boolean legacy = GradleProjectUtils.isLegacyVersion(version)
-
+        boolean hasDomainParent = GradleProjectUtils.hasDomainParent(project)
 
         InputStream contents = null
         String filename = null
@@ -106,6 +106,13 @@ class InitProjectTask extends DefaultTask {
         }
         writeFile(filename, contents)
 
+
+        //if not legacy, copy the starters globals
+        if (!legacy && !hasDomainParent) {
+            filename = 'src/main/app/globals.xml'
+            contents =  getClass().getResourceAsStream('/starters/starters-mule-globals.xml')
+            writeFile(filename, contents)
+        }
     }
 
     void writeFile(String filename, InputStream contents) {
@@ -139,6 +146,10 @@ class InitProjectTask extends DefaultTask {
 
     void saveDeployProperties(String filename, InputStream contents) {
 
+        String version = project.mule.version
+        boolean legacy = GradleProjectUtils.isLegacyVersion(version)
+        boolean hasDomainParent = GradleProjectUtils.hasDomainParent(project)
+
         if (contents == null) {
             throw new IllegalArgumentException("Cannot write $filename, contents not found.")
         }
@@ -146,7 +157,7 @@ class InitProjectTask extends DefaultTask {
         logger.debug('Applying proper domain, if needed.')
 
         //check if I have parent and if my parent is a domain
-        if (!project.parent || !project.parent.plugins.hasPlugin(MuleDomainPlugin)) {
+        if (!hasDomainParent) {
             logger.debug('The project is not part of any domain, leaving as it is')
             writeFile(filename, contents)
             return
@@ -162,6 +173,11 @@ class InitProjectTask extends DefaultTask {
         deployProps.load(contents)
 
         deployProps['domain'] = domainName
+
+        if (!legacy) {
+            //this is a non legacy domain so we exclude the globals.xml
+            deployProps['config.resources'] = 'mule-config.xml'
+        }
 
         deployProps.store(project.file(filename).newOutputStream(), 'Created by mule gradle plugin')
     }

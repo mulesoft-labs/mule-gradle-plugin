@@ -7,9 +7,6 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 
-    <flow name="new-starterFlow">
-        <http:listener config-ref="HTTP_Listener_Configuration" path="/${app.name}" allowedMethods="GET" doc:name="HTTP"/>
-        <set-payload value="Hello World from ${app.name}" doc:name="Set Payload"/>
-    </flow>
+    <http:listener-config name="HTTP_Listener_Configuration" host="${http.bind.interface}" port="${http.port}" doc:name="HTTP Listener Configuration"/>
 
 </mule>

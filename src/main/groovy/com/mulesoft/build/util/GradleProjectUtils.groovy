@@ -17,7 +17,9 @@
 package com.mulesoft.build.util
 
 import com.mulesoft.build.MulePluginExtension
+import com.mulesoft.build.domain.MuleDomainPlugin
 import com.mulesoft.build.muleagent.MuleAgentPluginExtension
+import org.gradle.api.Project
 
 /**
  * Created by juancavallotti on 5/7/15.
@@ -100,5 +102,20 @@ class GradleProjectUtils {
      */
     static int compareVersions(String left, String right) {
         return compareVersions(stringToVersion(left), stringToVersion(right))
+    }
+
+    /**
+     * Checks the parent project to have applied the mule domain plugin.
+     * @param project the project to check.
+     * @return true if the parent has the domain plugin applied, false if no parent or not a domain.
+     */
+    static boolean hasDomainParent(Project project) {
+        Project parent = project.getParent()
+
+        if (!parent) {
+            return false
+        }
+
+        return parent.plugins.hasPlugin(MuleDomainPlugin)
     }
 }
