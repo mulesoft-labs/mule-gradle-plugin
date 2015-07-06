@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 
 
 group = 'org.mulesoft.build'
-version = '2.0.0-SNAPSHOT'
+version = '2.0.0-RC1'
 
 //configure the wrapper task to point to the minimum gradle version.
 task wrapper(type: Wrapper) {
