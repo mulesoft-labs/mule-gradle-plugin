@@ -51,6 +51,12 @@ class DomainZip extends Zip {
             return convention.domainSourceDir
         }
 
+        //get the main source set's resources
+        from {
+            MulePluginConvention convention = project.convention.getByType(MulePluginConvention)
+            convention.domainResourcesDir
+        }
+
         //add the logic for copying the apps.
         rootSpec.into('apps') {
             from {

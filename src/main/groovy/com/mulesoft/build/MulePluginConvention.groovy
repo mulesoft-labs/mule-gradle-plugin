@@ -41,6 +41,12 @@ class MulePluginConvention {
     String domainSourceDir = 'src/main/domain'
 
     /**
+     * Where to read MuleDomain resources.
+     * TODO - this might be best implemented using source sets.
+     */
+    String domainResourcesDir = 'src/main/resources'
+
+    /**
      * Extension point for additional paths to be configured.
      */
     Set<String> additionalPaths = []
