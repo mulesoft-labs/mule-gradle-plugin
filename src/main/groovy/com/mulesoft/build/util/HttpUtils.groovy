@@ -15,8 +15,6 @@
  */
 package com.mulesoft.build.util
 
-import org.apache.commons.codec.binary.Base64
-
 /**
  * Created by juancavallotti on 04/06/14.
  */

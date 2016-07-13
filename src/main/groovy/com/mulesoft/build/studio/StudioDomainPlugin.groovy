@@ -22,6 +22,8 @@ import com.mulesoft.build.domain.MuleDomainPluginConvention
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.internal.file.DefaultSourceDirectorySetFactory
+import org.gradle.api.internal.file.collections.DefaultDirectoryFileTreeFactory
 import org.gradle.api.internal.tasks.DefaultSourceSet
 import org.gradle.api.internal.tasks.DefaultSourceSetContainer
 import org.gradle.api.tasks.SourceSet
@@ -135,7 +137,7 @@ class StudioDomainPlugin implements Plugin<Project> {
         eclipseClasspath.classpath.plusConfigurations = [project.configurations.testCompile]
 
         //define the two source sets that are interesting to us.
-        DefaultSourceSet dss = new DefaultSourceSet('main', project.fileResolver)
+        DefaultSourceSet dss = new DefaultSourceSet('main', new DefaultSourceDirectorySetFactory(project.fileResolver, new DefaultDirectoryFileTreeFactory()))
 
         dss.resources.srcDirs(mulePluginConvention.domainSourceDir, "src/${dss.name}/resources")
 
