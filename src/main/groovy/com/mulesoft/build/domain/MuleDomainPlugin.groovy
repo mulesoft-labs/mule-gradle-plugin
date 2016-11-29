@@ -160,7 +160,7 @@ class MuleDomainPlugin implements Plugin<Project> {
 
             initDomainTask.dependsOn subp.initMuleProject
 
-            Task createSubpTask = subp.task('createModule') << {
+            Task createSubpTask = subp.task('createModule').doLast {
                 if (subpFolder.mkdir()) {
                     logger.debug("Created folder for module: ${subp.name}")
                 } else {

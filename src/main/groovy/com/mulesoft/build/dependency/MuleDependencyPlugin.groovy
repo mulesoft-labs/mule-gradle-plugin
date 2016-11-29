@@ -70,7 +70,7 @@ class MuleDependencyPlugin implements Plugin<Project> {
         } as Action<Project>)
 
         Task printMuleDependencies = project.task('muleDeps')
-        printMuleDependencies << {
+        printMuleDependencies.doLast {
             MulePluginExtension muleExt = project.mule
 
             println "Core libs (mule.coreLibs): ${muleExt.coreLibs}"

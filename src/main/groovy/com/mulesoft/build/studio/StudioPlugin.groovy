@@ -87,14 +87,14 @@ class StudioPlugin implements Plugin<Project> {
 
         Task currentTask
 
-        currentTask = project.task('addDependency') << {
+        currentTask = project.task('addDependency').doLast {
             deps.addDependency(project);
         }
 
         currentTask.description = 'Add a dependency on the studio file descriptor. - Intended for use with tooling'
         currentTask.group = MulePluginConstants.STUDIO_GROUP
 
-        currentTask = project.task('studio') << {
+        currentTask = project.task('studio').doLast {
             logger.info('Updating mule studio project...')
 
             //get the mule project configuration
