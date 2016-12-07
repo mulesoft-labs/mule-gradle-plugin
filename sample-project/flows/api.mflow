@@ -44,7 +44,7 @@
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
-            <property name="bussinessEventsLabel"/>
+            <property name="businessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
             <property name="auxiliary;index" value="23"/>
         </properties>
@@ -103,7 +103,7 @@
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
-            <property name="bussinessEventsLabel"/>
+            <property name="businessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
             <property name="auxiliary;index" value="28"/>
         </properties>
