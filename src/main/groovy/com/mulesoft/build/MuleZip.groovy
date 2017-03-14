@@ -48,6 +48,15 @@ class MuleZip extends Jar {
 
         def baseDir = rootSpec.addChildBeforeSpec(mainSpec).into('')
 
+        //api raml
+        baseDir.into('classes') {
+            from { 'src/main/api' }
+        }
+
+        baseDir.into('api') {
+            from { 'src/main/api' }
+        }
+
         //java sources
         baseDir.into('classes') {
             from {
@@ -72,13 +81,7 @@ class MuleZip extends Jar {
             }
         }
 
-        //devkit plugins
-        baseDir.into('api') {
-            from {
-                def classpath = getClasspath()
-                classpath ? classpath.filter {File file -> file.isFile() && file.name.endsWith('.raml')} : []
-            }
-        }
+
 
 
     }

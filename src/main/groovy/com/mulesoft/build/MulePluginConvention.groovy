@@ -31,11 +31,6 @@ class MulePluginConvention {
     String dataMapperMappingsDir = 'mappings'
 
     /**
-     * Where to read APIKit, RAML files.
-     */
-    String apiKitApiDir = 'src/main/api'
-
-    /**
      * Where to read MuleDomain sources.
      */
     String domainSourceDir = 'src/main/domain'
@@ -52,7 +47,7 @@ class MulePluginConvention {
     Set<String> additionalPaths = []
 
     public final Set<String> appResourcesDirectory() {
-        return ([appSourceDir, dataMapperMappingsDir, apiKitApiDir] + additionalPaths)
+        return ([appSourceDir, dataMapperMappingsDir] + additionalPaths)
     }
 
 }
