@@ -72,6 +72,14 @@ class MuleZip extends Jar {
             }
         }
 
+        //devkit plugins
+        baseDir.into('api') {
+            from {
+                def classpath = getClasspath()
+                classpath ? classpath.filter {File file -> file.isFile() && file.name.endsWith('.raml')} : []
+            }
+        }
+
 
     }
 
