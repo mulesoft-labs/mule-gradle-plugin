@@ -6,3 +6,4 @@
 target/
 /sample-project/build
 .gradletasknamecache
+.DS_Store
