@@ -33,7 +33,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         </apikit:mapping>
     </apikit:mapping-exception-strategy>
     <flow name="api-main" doc:name="api-main">
-        <http:inbound-endpoint address="http://localhost:8081/myapi" doc:name="HTTP" exchange-pattern="request-response"/>
+        <http:listener path="myapi" config-ref="HTTP" doc:name="HTTP Listener" />
         <cors:validate publicResource="true" />
         <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
         <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>

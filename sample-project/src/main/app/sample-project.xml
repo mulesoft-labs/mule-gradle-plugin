@@ -6,8 +6,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+    <http:listener-config host="0.0.0.0" port="8081" name="HTTP" doc:name="HTTP Listener Configuration"/>
+
     <flow name="sample-projectFlow1" doc:name="sample-projectFlow1">
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="test" doc:name="HTTP"/>
-        <echo-component doc:name="Echo"/>
+        <http:listener path="test" config-ref="HTTP"/>
+        <set-payload value="{ &quot;message&quot; : &quot;hello gradle world&quot; }" mimeType="application/json" />
     </flow>
 </mule>
