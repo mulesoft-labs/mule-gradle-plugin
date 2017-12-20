@@ -15,8 +15,11 @@
  */
 package com.mulesoft.build.cloudhub
 
+import com.mulesoft.build.MulePluginExtension
 import com.mulesoft.build.util.FileUtils
 import com.mulesoft.build.util.HttpUtils
+import com.mulesoft.build.util.MultipartOutputStream
+import groovy.json.JsonOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -35,6 +38,9 @@ class UploadToCloudhubTask extends DefaultTask {
 
         //get the extension
         CloudhubPluginExtension ext = project.extensions.getByType(CloudhubPluginExtension)
+
+        //get the mule plugin extension
+        MulePluginExtension muleExt = project.extensions.getByType(MulePluginExtension)
 
         //build the target uri
         String chApi = conv.clouduhbApiEndpoint
@@ -61,7 +67,7 @@ class UploadToCloudhubTask extends DefaultTask {
 
 
         //try and upload the app to cloudhub
-        String url = "$chApi/applications/$env.domainName/deploy"
+        String url = "$chApi/v2/applications"
 
         if (logger.isInfoEnabled()){
             logger.info("Will deploy file: $uploadedFile.absolutePath")
@@ -78,18 +84,38 @@ class UploadToCloudhubTask extends DefaultTask {
 
             println "\t Uploading file $uploadedFile.name to URL: $url"
 
+            def mpbuilder = MultipartOutputStream.builder()
+
+
             //set the headers
 
             conn.doOutput = true
             conn.useCaches = false
             conn.setRequestMethod('POST')
             conn.setRequestProperty('Authorization', HttpUtils.generateAuthenticationHeader(env.username, env.password))
-            conn.setRequestProperty('Content-Type', 'application/octet-stream')
+            conn.setRequestProperty('Content-Type', "multipart/form-data; boundary=$mpbuilder.boundary")
 
-            //write the payload
-            OutputStream os = conn.getOutputStream()
+            logger.debug('Sending multipart body...')
 
+            OutputStream reqOutputStream = conn.getOutputStream()
+
+            //create a multipart stream
+            MultipartOutputStream os = mpbuilder.build(reqOutputStream)
+
+            //start sending the parts
+            //send the info
+            os.startPart('application/zip', ["Content-Disposition: form-data; name=\"file\"; filename=\"${uploadedFile.name}\""] as String[])
+            //send the file part
             FileUtils.copyStream(uploadedFile.newInputStream(), os)
+
+            //say that we want to auto start
+            os.startPart(['Content-Disposition: form-data; name="autoStart"'] as String[])
+            os.write('true'.bytes)
+
+
+            //the app info json
+            os.startPart(['Content-Disposition: form-data; name="appInfoJson"'] as String[])
+            os.write(buildAppJson(muleExt, conv, ext, env, uploadedFile).bytes)
 
             os.flush()
             os.close()
@@ -103,6 +129,8 @@ class UploadToCloudhubTask extends DefaultTask {
                         break;
                     default:
                         logger.warn("Cloudhub responded with status code: $conn.responseCode")
+                        logger.warn("Response Message: $conn.responseMessage")
+                        logger.warn("Response Body: $conn.inputStream.text")
                 }
                 throw new IllegalStateException('Deployment to cloudhub failed.')
             }
@@ -113,6 +141,44 @@ class UploadToCloudhubTask extends DefaultTask {
             conn.disconnect()
         }
 
+    }
+
+    String buildAppJson(MulePluginExtension muleExt, CloudhubPluginConvention conv, CloudhubPluginExtension ext, CloudhubEnvironment env, File uploadedFile) {
+
+        def config = [
+            fileChecksum: '',
+            fileSource: '',
+            fileName: uploadedFile.name,
+            properties:[:],
+            logLevels:[],
+            muleVersion: [
+                    version: muleExt.version
+            ],
+            trackingSettings: [
+                trackingLevel: "DISABLED"
+            ],
+            monitoringEnabled: true,
+            monitoringAutoRestart :true,
+            persistentQueues :false,
+            persistentQueuesEncrypted :false,
+            workers:[
+                amount:1,
+                type:[
+                    name:"Medium",
+                    weight:1,
+                    cpu:"1 vCore",
+                    memory:"1.5 GB memory"
+                ]
+            ],
+            objectStoreV1:true,
+            loggingNgEnabled:true,
+            loggingCustomLog4JEnabled:false,
+            staticIPsEnabled:false,
+            domain: env.domainName
+
+        ]
+
+        return JsonOutput.toJson(config)
     }
 
 }
