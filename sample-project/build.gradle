@@ -18,7 +18,7 @@ mule.version = '3.8.5'
 
 mule.muleEnterprise = true
 
-mule.enterpriseRepoUsername = eeRepoUser
+mule.enterpriseRepoUsername = eeRepoUser //these are local variables to my environment
 mule.enterpriseRepoPassword = eeRepoPassword
 
 mule.disableDataMapper = true
