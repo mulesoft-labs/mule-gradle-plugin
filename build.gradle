@@ -19,7 +19,7 @@ version = '2.0.0-SNAPSHOT'
 
 //configure the wrapper task to point to the minimum gradle version.
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.4'
 }
 
 
