@@ -53,7 +53,7 @@ class MuleRunPlugin implements Plugin<Project> {
 
             task.dependsOn unpackPlugins
 
-            unpackPlugins << {
+            unpackPlugins.doLast {
                 logger.debug('Adding plugins to the runApp classpath...')
                 task.classpath = task.classpath + unpackPlugins.pluginJars
             }

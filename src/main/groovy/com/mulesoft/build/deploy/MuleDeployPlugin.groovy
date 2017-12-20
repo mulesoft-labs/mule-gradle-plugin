@@ -50,7 +50,7 @@ class MuleDeployPlugin implements Plugin<Project> {
             //SEE: https://github.com/mulesoft-labs/mule-gradle-plugin/issues/26
             Task deployLocallytask = proj.tasks.create('deployLocally', InstallInRuntime)
 
-            Task findRuntime = proj.tasks.create('configureInstall') << {
+            Task findRuntime = proj.tasks.create('configureInstall').doLast {
                 //do this as soon as we have the effective config.
                 deployLocallytask.doInstallInRuntime()
             }
