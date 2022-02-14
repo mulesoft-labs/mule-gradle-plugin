@@ -27,6 +27,7 @@ import org.gradle.api.internal.file.collections.DefaultDirectoryFileTreeFactory
 import org.gradle.api.internal.tasks.DefaultSourceSet
 import org.gradle.api.internal.tasks.DefaultSourceSetContainer
 import org.gradle.api.tasks.SourceSet
+import org.gradle.internal.impldep.org.eclipse.jdt.core.JavaConventions
 import org.gradle.plugins.ide.api.XmlFileContentMerger
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.eclipse.GenerateEclipseClasspath
@@ -95,7 +96,7 @@ class StudioDomainPlugin implements Plugin<Project> {
         }
 
 
-        Task studioTask = project.task('studio') << {
+        Task studioTask = project.task('studio').doLast {
             logger.info('Updating mule studio project...')
 
             //get the mule project configuration
@@ -138,6 +139,8 @@ class StudioDomainPlugin implements Plugin<Project> {
 
         //define the two source sets that are interesting to us.
         DefaultSourceSet dss = new DefaultSourceSet('main', new DefaultSourceDirectorySetFactory(project.fileResolver, new DefaultDirectoryFileTreeFactory()))
+
+
 
         dss.resources.srcDirs(mulePluginConvention.domainSourceDir, "src/${dss.name}/resources")
 
